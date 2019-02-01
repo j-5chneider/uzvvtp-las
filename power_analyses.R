@@ -617,7 +617,7 @@ pwr.anova.test(k = 4,
       mutate(mzp = case_when(                                                                                 # introducing variable for measurement time
                           variable == "tp_2" ~ 2,
                           variable == "tp_3" ~ 3,
-                          variable == "tp_4" ~ 4,
+                          variable == "tp_4" ~ 4
                           ),
              variable = case_when(                                                                            # aligning variable names so that it will be one column after reshaping
                           variable == "tp_2" | variable == "tp_3" | variable == "tp_4" ~ "tp"
