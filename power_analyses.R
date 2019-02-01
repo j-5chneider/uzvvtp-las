@@ -764,8 +764,9 @@ pwr.anova.test(k = 4,
     powerSim(model4, nsim=500, seed = 123)
     # powerCurve(model4)
     powerSim(model5, nsim=500, seed = 123)
-    pc4 <- powerCurve(model5)
-    powerSim(model6, nsim=500, seed = 123)
+    pc5 <- powerCurve(model5)
+    powerSim(model6, nsim=10, seed = 123)
+    pc6 <- powerCurve(model6)
     
 
 ## Studie 2 ####################################################################
