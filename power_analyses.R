@@ -445,7 +445,9 @@ library(effsize)
       Output_7F_reg[(participants-130)/20, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
     }
     
-    View(Output_7F_reg)  
+    View(Output_7F_reg)
+    
+    
 
 
     
@@ -563,9 +565,11 @@ library(effsize)
     summary(Output_7F_2nd_reg)
     getCutoff(Output_7F_2nd_reg, 0.05)
     plotCutoff(Output_7F_2nd_reg, 0.05)
-
-    
-    
+        # results, some rows
+        # 690 0.802 0.784 0.778 0.796 0.788 0.818 0.822 0.01316585 0.9907838 0.9897598 0.02995081
+        # 710 0.790 0.828 0.802 0.842 0.842 0.838 0.852 0.01278678 0.9912922 0.9903247 0.02913166
+        # 730 0.828 0.818 0.838 0.798 0.820 0.820 0.800 0.01208556 0.9921801 0.9913112 0.02876481
+        # 750 0.856 0.862 0.862 0.840 0.838 0.842 0.852 0.01250722 0.9916610 0.9907345 0.02847058
     
     
     
@@ -766,6 +770,51 @@ pwr.anova.test(k = 4,
     powerSim(model5, nsim=500, seed = 123)
     pc4 <- powerCurve(model5)
     powerSim(model6, nsim=500, seed = 123)
+    
+    
+    power_6 <- data.frame()
+    for (participants in seq(from = 0.1, to = 1, by = 0.1)) {
+        # parameters
+        predictor <- c(rep(2, times = 1050*participants),     # 1050 in 2nd bachelor semester (reference category)   
+                       rep(4, times = 1050*participants),     # 1050 in 4th bachelor semester
+                       rep(5, times = 700*participants),      # 700 in 5th bachelor semester
+                       rep(6, times = 240*participants),      # 240 in 1st master semester
+                       rep(7, times = 360*participants),      # 360 in 2nd master semester
+                       rep(8, times = 240*participants),      # 240 in 3rd master semester
+                       rep(9, times = 360*participants)       # 360 in 4th master semester
+        )
+        
+        g <- c(rep(letters[1:3], times = 350*participants),    # seven panels (=letters) from design (see table 3 in grant proposal)
+               rep(letters[2:4], times = 350*participants), 
+               rep(letters[3:4], times = 350*participants), 
+               rep(letters[4:5], times = 120*participants), 
+               rep(letters[4:6], times = 120*participants), 
+               rep(letters[5:6], times = 120*participants), 
+               rep(letters[5:7], times = 120*participants)
+        )
+        
+        mydata3 <- data.frame(predictor, g) 
+        
+        b3 <- c(2, 0.1217353)     # fixed intercept and slopes, assuming effects from BilWiss
+        v <- 0.01              # random intercept variance (derived from BilWiss data) 0.000648
+        s <- 0.527             # residual standard deviation (derived from BilWiss data)
+        
+        model6 <- makeLmer(y ~ predictor + (1|g),
+                           fixef=b3,
+                           VarCorr=v,
+                           sigma=s,
+                           data=mydata3
+        )
+        
+        tmp <- powerSim(model6, nsim=500, seed = 123)
+        
+        power_6[participants*10, "n"] <- participants*10
+        power_6[participants*10, "power_mean"] <- summary(tmp)$mean
+        power_6[participants*10, "power_lower"] <- summary(tmp)$lower
+        power_6[participants*10, "power_upper"] <- summary(tmp)$upper
+    }
+    
+    View(power_6)
     
 
 ## Studie 2 ####################################################################
