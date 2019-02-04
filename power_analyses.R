@@ -833,7 +833,7 @@ mydata3 <- data.frame(x1, x2, x3, g)
 
 b1 <- c(2, .30, .30, .30)       # fixed intercept and slope, assuming meadium effect
 b2 <- c(2, .10, .10, .10)       # fixed intercept and slopes, assuming small effects
-b3 <- c(2, .1217, .1217, .1217) # fixed intercept and slopes, assuming effects from BilWiss
+b3 <- c(2, 0.1217353, 0.1217353, 0.1217353) # fixed intercept and slopes, assuming effects from BilWiss
 v <- 0.01              # random intercept variance
 s <- 0.527                # residual standard deviation
 
