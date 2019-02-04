@@ -621,7 +621,7 @@ pwr.anova.test(k = 4,
       mutate(mzp = case_when(                                                                                 # introducing variable for measurement time
                           variable == "tp_2" ~ 2,
                           variable == "tp_3" ~ 3,
-                          variable == "tp_4" ~ 4,
+                          variable == "tp_4" ~ 4
                           ),
              variable = case_when(                                                                            # aligning variable names so that it will be one column after reshaping
                           variable == "tp_2" | variable == "tp_3" | variable == "tp_4" ~ "tp"
@@ -768,8 +768,9 @@ pwr.anova.test(k = 4,
     powerSim(model4, nsim=500, seed = 123)
     # powerCurve(model4)
     powerSim(model5, nsim=500, seed = 123)
-    pc4 <- powerCurve(model5)
+    pc5 <- powerCurve(model5)
     powerSim(model6, nsim=500, seed = 123)
+    pc6 <- powerCurve(model6)
     
     
     power_6 <- data.frame()
