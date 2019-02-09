@@ -291,7 +291,7 @@ library(effsize)
 
     
 
-## Studie 1.2 (Überzeugungen zw. Fachsemestern (1)) ##################################################################
+## Studie 1.2 (Überzeugungen zw. Fachsemestern [SoSe20]) ##################################################################
   # Querschnitt SoSe 2020
     
   # └ SEM model 1 ####
@@ -447,7 +447,14 @@ library(effsize)
     
     View(Output_7F_reg)
     
-    
+    # the script takes quite long, so here are some rows of the resulting table
+      #> samplesize   f1     f2     f3     f4     f5     f6     f7     rmsea      cfi       tli       srmr
+      #> 670          0.806  0.806  0.808  0.792  0.806  0.784  0.782  0.01403042 0.9896873 0.9885414 0.03034742
+      #> 690          0.802  0.784  0.778  0.796  0.788  0.818  0.822  0.01316585 0.9907838 0.9897598 0.02995081
+      #> 710          0.790  0.828  0.802  0.842  0.842  0.838  0.852  0.01278678 0.9912922 0.9903247 0.02913166
+      #> 730          0.828  0.818  0.838  0.798  0.820  0.820  0.800  0.01208556 0.9921801 0.9913112 0.02876481
+      #> 750          0.856  0.862  0.862  0.840  0.838  0.842  0.852  0.01250722 0.9916610 0.9907345 0.02847058
+      #> 770          0.858  0.850  0.844  0.854  0.862  0.836  0.844  0.01242964 0.9919912 0.9911013 0.02827026
 
 
     
@@ -602,7 +609,7 @@ pwr.anova.test(k = 4,
                power = .95
 )
 
-## Studie 1.2 (Überzeugungen zw. Fachsemestern (2)) ##################################################################
+## Studie 1.2 (Überzeugungen zw. Fachsemestern [alle Semester]) ##################################################################
   # Querschnitt über alle Jahrgänge, Berücksichtigung der Panelstruktur
 
 
@@ -772,7 +779,7 @@ pwr.anova.test(k = 4,
     powerSim(model6, nsim=500, seed = 123)
     pc6 <- powerCurve(model6)
     
-    
+    # making a loop to check out power for different sample sizes
     power_6 <- data.frame()
     for (participants in seq(from = 0.1, to = 1, by = 0.1)) {
         # parameters
