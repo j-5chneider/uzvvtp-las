@@ -1,0 +1,86 @@
+---
+title: "Überzeugungen zum Verhältnis von Theorie und Praxis"
+subtitle: "von Lehramtsstudierenden"
+author: "Kooperation mit Jürgen Schneider"
+email: "juergen.schneider@uni-tuebingen.de"
+date: "`r format(Sys.Date(), '%d %b %Y')`"
+output:
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Worum geht es? | Überzeugungen beeinflussen Wahrnehmung der Lerninhalte
+
+```{r }
+# library(DiagrammeR)
+# 
+# grViz("
+#     digraph {
+#         node [shape = rectange, 
+#               fixedsize = true, 
+#               width = 3, 
+#               height = 1, 
+#               fontname = Helvetica,
+#               color = white,
+#               fontcolor = gray25]
+#               
+#         edge [color = gray35,
+#               penwidth = 3]
+#               
+# 
+#         # set nodes
+#             ange [shape = plaintext, 
+#                   fontsize = 20, 
+#                   label = 'Lehrangebot', 
+#                   style = filled, 
+#                   fillcolor = honeydew3]
+#             indiv [shape = plaintext, 
+#                    fontsize = 20, 
+#                    label = 'Individuelle \\n Voraussetzungen', 
+#                    style = filled, 
+#                    fillcolor = honeydew3]
+#             theo [label = 'theoretische Inhalte', 
+#                   style = filled, 
+#                   fillcolor = honeydew2, 
+#                   height = 0.5]
+#             ueb [label = 'Überzeugungen \\n Theorie-Praxis-Verhältnis', 
+#                  style = filled, 
+#                  fillcolor = honeydew2, 
+#                  height = 0.5]
+#             dot [shape = point, 
+#                  width = 0.01, 
+#                  height = 0.01]  
+#             umg [label = 'Umgang mit Lehrangebot']
+#         
+#         # set edges
+#             subgraph {
+#                 ange -> theo [color = White, arrowhead = none]
+#             }
+#         
+#             subgraph {
+#                 indiv -> ueb [color = White, arrowhead = none]
+#             }
+#         
+#             {theo, ueb} -> dot [dir=none]
+#             dot -> umg
+#     }
+# ")
+
+```
+<img src="webs/flowchart_angebot_nutzung.png" width="100%" />
+
+## Welche Überzeugungen?
+
+* Dewe, Radtke, Ferchhoff (1992) bzw. Radtke (2004):
+    + Transfer
+    + Transformation
+    + Relationierung
+* hierfür entwickeln wir einen FB, der mit Ihrer Hilfe erstellt werden kann
+
+## Wie entwickeln sich diese Überzeugungen?
+Plot
