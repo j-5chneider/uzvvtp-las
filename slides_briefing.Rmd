@@ -1,6 +1,6 @@
 ---
-title: "Überzeugungen zum Verhältnis von Theorie und Praxis"
-subtitle: "von Lehramtsstudierenden"
+title: "Das Verhältnis<br />von Theorie und Praxis"
+subtitle: "Überzeugungen Lehramtsstudierender"
 author: "Kooperation mit Jürgen Schneider"
 email: "juergen.schneider@uni-tuebingen.de"
 date: "`r format(Sys.Date(), '%d %b %Y')`"
@@ -8,10 +8,12 @@ output:
   ioslides_presentation:
     widescreen: true
     smaller: true
+    css: webs/style.css
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(shiny)
 ```
 
 ## Worum geht es? | Überzeugungen beeinflussen Wahrnehmung der Lerninhalte
@@ -74,13 +76,61 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 <img src="webs/flowchart_angebot_nutzung.png" width="100%" />
 
-## Welche Überzeugungen?
+## Welche Überzeugungen? | 3 Hauptmodelle
+<div class = "container">
+  <div class="box"><img src="webs/transfer.png" height="75px" style="margin-top:25px" />  
+__Transfer__  
+\
+\
 
-* Dewe, Radtke, Ferchhoff (1992) bzw. Radtke (2004):
-    + Transfer
-    + Transformation
-    + Relationierung
-* hierfür entwickeln wir einen FB, der mit Ihrer Hilfe erstellt werden kann
+<span style="font-size:0.8em">Aus wissenschaftlichem Wissen werden __direkt__ Handlungsregeln abgeleitet.</span>
+  </div>
+  
+  <div class="box"><img src="webs/transform.png" height="75px" style="margin-top:25px" />  
+__Transformation__  
+\
+\
 
-## Wie entwickeln sich diese Überzeugungen?
-Plot
+<span style="font-size:0.8em">Wissenschaftliches Wissen wird für die Praxis in Handlungswissen __verändert__.</span>
+  </div>
+  
+  <div class="box"><img src="webs/relatio.png" height="100px" />  
+__Relationierung__  
+\
+\
+
+<span style="font-size:0.8em">Wissenschaftliches Wissen und Handlungswissen als __zwei Perspektiven__ bei der Sinnkonstruktion konkreter Situationen.</span>
+  </div>
+</div>
+
+
+
+<div class="notes">
+hierfür entwickeln wir einen FB, der mit Ihrer Hilfe erstellt werden kann
+</div>
+
+
+
+
+## Wie entwickeln sich diese Überzeugungen | ... im Studienverlauf?
+```{r warning=F, message=F, fig.align='center'}
+library(tidyverse)
+plotdata <- tibble(Semester = rep(1:10, 3), 
+                   y = c(c(5.2, 4.9, 4.7, 4.1, 3.4, 2.9, 2.5, 2.3, 2.2, 2.2), c(3.1, 3.0, 3.1, 3.4, 3.8, 4.3, 4.5, 4.8, 5.1, 5.2), c(2.2, 2.2, 2.3, 2.3, 2.4, 2.5, 2.7, 3.0, 3.3, 3.4)), 
+                   ueb = c(rep("Transfer", 10), rep("Transformation", 10), rep("Relationierung", 10)))
+
+ggplot(plotdata, aes(x=Semester, y=y, color=ueb)) + 
+    geom_line(position = "identity", size=2) +
+    theme_minimal() +
+    theme(
+      axis.text = element_text(size=16),
+      axis.title = element_text(size=18, margin = margin(t = 50, r = 50), color = "darkgrey"),
+      legend.position = "none"
+    ) +
+  scale_x_continuous(breaks = c(1:10)) +
+  scale_y_continuous(breaks = c(1, 2, 3, 4, 5, 6), limits = c(1,6), labels = c("stimme gar \n nicht zu", "", "", "", "", "stimme \n voll zu")) +
+  labs(x = "Semester", 
+       y = "")
+
+
+```
