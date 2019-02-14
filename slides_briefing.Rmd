@@ -134,3 +134,5 @@ ggplot(plotdata, aes(x=Semester, y=y, color=ueb)) +
 
 
 ```
+
+# Vielen Dank für die Teilnahme :) | Fragen? <br /> juergen.schneider@uni-tuebingen.de  
