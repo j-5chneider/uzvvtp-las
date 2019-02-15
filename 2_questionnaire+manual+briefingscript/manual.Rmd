@@ -1,7 +1,7 @@
 ---
-title: "Skalendokumentation"
+title: "survey manual"
 description: |
-  Erhebungsinstrument „Überzeugungen zum Verhältnis von Theorie und Praxis von Lehramtsstudierenden“
+  scale „belief on the relation of theory and practice in teaching“
 
 author:
   - name: Jürgen Schneider 
@@ -67,7 +67,7 @@ Realized with the online survey tool (formr)[https://formr.org/]
 
 ```{r, layout = "l-page"}
 
-items <- read.csv("data/items.csv", sep = ";")
+items <- read.csv("../data/items.csv", sep = ";")
 
 library(knitr)
 library(tidyverse)
@@ -110,7 +110,7 @@ items %>%
 \
 
 ## 2nd order model
-```{r}
+```{r echo = TRUE}
 popModel1 <- "
           # latent variables
               f1 =~ 0.654*i1_1 + 0.654*i1_2 + 0.654*i1_3 + 0.654*i1_4 + 0.654*i1_5
@@ -197,23 +197,93 @@ analyzeModel1 <- "
               g2 =~ f3 + f4 + f5 + f6
 "
 
-Output1 <- sim(nRep = 500, 
-               model = analyzeModel1, 
-               n = 200, 
-               generate = popModel1, 
-               lavaanfun = "cfa", 
-               std.lv = T, 
-               seed = 123)
+# Output1 <- sim(nRep = 500, 
+#                model = analyzeModel1, 
+#                n = 200, 
+#                generate = popModel1, 
+#                lavaanfun = "cfa", 
+#                std.lv = T, 
+#                seed = 123)
+# 
+# getCutoff(Output1, 0.05)
+# plotCutoff(Output1, 0.05)
+# summary(Output1)
 
-getCutoff(Output1, 0.05)
-plotCutoff(Output1, 0.05)
-summary(Output1)
+# making a loop to identify sample size for 80% power with medium efect
+Output1_loop <- data.frame()
+
+for(participants in seq(from = 50, to = 250, by = 10)) {
+  
+  Output_tmp <- sim(nRep = 500, 
+                    model = analyzeModel1, 
+                    n = participants, 
+                    generate = popModel1, 
+                    lavaanfun = "cfa", 
+                    std.lv = T, 
+                    seed = 123)
+  
+  Output1_loop[(participants-40)/10, "samplesize"] <- participants
+  Output1_loop[(participants-40)/10, "f1_1"] <- summaryParam(Output_tmp)[1, 10]
+  Output1_loop[(participants-40)/10, "f1_2"] <- summaryParam(Output_tmp)[2, 10]
+  Output1_loop[(participants-40)/10, "f1_3"] <- summaryParam(Output_tmp)[3, 10]
+  Output1_loop[(participants-40)/10, "f1_4"] <- summaryParam(Output_tmp)[4, 10]
+  Output1_loop[(participants-40)/10, "f1_5"] <- summaryParam(Output_tmp)[5, 10]
+  Output1_loop[(participants-40)/10, "f2_1"] <- summaryParam(Output_tmp)[6, 10]
+  Output1_loop[(participants-40)/10, "f2_2"] <- summaryParam(Output_tmp)[7, 10]
+  Output1_loop[(participants-40)/10, "f2_3"] <- summaryParam(Output_tmp)[8, 10]
+  Output1_loop[(participants-40)/10, "f2_4"] <- summaryParam(Output_tmp)[9, 10]
+  Output1_loop[(participants-40)/10, "f2_5"] <- summaryParam(Output_tmp)[10, 10]
+  Output1_loop[(participants-40)/10, "f3_1"] <- summaryParam(Output_tmp)[11, 10]
+  Output1_loop[(participants-40)/10, "f3_2"] <- summaryParam(Output_tmp)[12, 10]
+  Output1_loop[(participants-40)/10, "f3_3"] <- summaryParam(Output_tmp)[13, 10]
+  Output1_loop[(participants-40)/10, "f3_4"] <- summaryParam(Output_tmp)[14, 10]
+  Output1_loop[(participants-40)/10, "f3_5"] <- summaryParam(Output_tmp)[15, 10]
+  Output1_loop[(participants-40)/10, "f4_1"] <- summaryParam(Output_tmp)[16, 10]
+  Output1_loop[(participants-40)/10, "f4_2"] <- summaryParam(Output_tmp)[17, 10]
+  Output1_loop[(participants-40)/10, "f4_3"] <- summaryParam(Output_tmp)[18, 10]
+  Output1_loop[(participants-40)/10, "f4_4"] <- summaryParam(Output_tmp)[19, 10]
+  Output1_loop[(participants-40)/10, "f4_5"] <- summaryParam(Output_tmp)[20, 10]
+  Output1_loop[(participants-40)/10, "f5_1"] <- summaryParam(Output_tmp)[21, 10]
+  Output1_loop[(participants-40)/10, "f5_2"] <- summaryParam(Output_tmp)[22, 10]
+  Output1_loop[(participants-40)/10, "f5_3"] <- summaryParam(Output_tmp)[23, 10]
+  Output1_loop[(participants-40)/10, "f5_4"] <- summaryParam(Output_tmp)[24, 10]
+  Output1_loop[(participants-40)/10, "f5_5"] <- summaryParam(Output_tmp)[25, 10]
+  Output1_loop[(participants-40)/10, "f6_1"] <- summaryParam(Output_tmp)[26, 10]
+  Output1_loop[(participants-40)/10, "f6_2"] <- summaryParam(Output_tmp)[27, 10]
+  Output1_loop[(participants-40)/10, "f6_3"] <- summaryParam(Output_tmp)[28, 10]
+  Output1_loop[(participants-40)/10, "f6_4"] <- summaryParam(Output_tmp)[29, 10]
+  Output1_loop[(participants-40)/10, "f6_5"] <- summaryParam(Output_tmp)[30, 10]
+  Output1_loop[(participants-40)/10, "f7_1"] <- summaryParam(Output_tmp)[31, 10]
+  Output1_loop[(participants-40)/10, "f7_2"] <- summaryParam(Output_tmp)[32, 10]
+  Output1_loop[(participants-40)/10, "f7_3"] <- summaryParam(Output_tmp)[33, 10]
+  Output1_loop[(participants-40)/10, "f7_4"] <- summaryParam(Output_tmp)[34, 10]
+  Output1_loop[(participants-40)/10, "f7_5"] <- summaryParam(Output_tmp)[35, 10]
+  Output1_loop[(participants-40)/10, "chi2"] <- getCutoff(Output_tmp, 0.05)[1]
+  Output1_loop[(participants-40)/10, "aic"] <- getCutoff(Output_tmp, 0.05)[2]
+  Output1_loop[(participants-40)/10, "bic"] <- getCutoff(Output_tmp, 0.05)[3]
+  Output1_loop[(participants-40)/10, "rmsea"] <- getCutoff(Output_tmp, 0.05)[4]
+  Output1_loop[(participants-40)/10, "cfi"] <- getCutoff(Output_tmp, 0.05)[5]
+  Output1_loop[(participants-40)/10, "tli"] <- getCutoff(Output_tmp, 0.05)[6]
+  Output1_loop[(participants-40)/10, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
+}
+
+ggplot(Output1_loop, aes(x=samplesize, y=rmsea)) + geom_point() + geom_hline(yintercept=0.05, color="#ff0000")
+ggplot(Output1_loop, aes(x=samplesize, y=cfi)) + geom_point() + geom_hline(yintercept=0.95, color="#ff0000")
+ggplot(Output1_loop, aes(x=samplesize, y=tli)) + geom_point() + geom_hline(yintercept=0.95, color="#ff0000")
+ggplot(Output1_loop, aes(x=samplesize, y=srmr)) + geom_point() + geom_hline(yintercept=0.11, color="#ff0000")
+
+Output1_loop <- Output1_loop %>%
+  mutate(coverage = rowMeans(data.frame(f1_1, f1_2, f1_3, f1_4, f1_5, f2_1, f2_2, f2_3, f2_4, f2_5, f3_1, f3_2, f3_3, f3_4, f3_5, f4_1, f4_2, f4_3, f4_4, f4_5, f5_1, f5_2, f5_3, f5_4, f5_5, f6_1, f6_2, f6_3, f6_4, f6_5, f7_1, f7_2, f7_3, f7_4, f7_5)))
+
+ggplot(Output1_loop, aes(x=samplesize, y=coverage)) + geom_point() + geom_smooth(se = F, method = "lm", formula = y ~ log(x))
+
+rm(Output_tmp)
 
 ```
 
 
 ## 7 factors model
-```{r}
+```{r echo=TRUE}
 popModel2 <- "
           # latent variables
               f1 =~ 0.654*i1_1 + 0.654*i1_2 + 0.654*i1_3 + 0.654*i1_4 + 0.654*i1_5
@@ -318,17 +388,17 @@ analyzeModel2 <- "
 "
 
 
-Output2 <- sim(nRep = 500, 
-               model = analyzeModel2, 
-               n = 180, 
-               generate = popModel2, 
-               lavaanfun = "cfa", 
-               std.lv = T, 
-               seed = 123)
-
-getCutoff(Output2, 0.05)
-plotCutoff(Output2, 0.05)
-summary(Output2)
+# Output2 <- sim(nRep = 500, 
+#                model = analyzeModel2, 
+#                n = 180, 
+#                generate = popModel2, 
+#                lavaanfun = "cfa", 
+#                std.lv = T, 
+#                seed = 123)
+# 
+# getCutoff(Output2, 0.05)
+# plotCutoff(Output2, 0.05)
+# summary(Output2)
 
 
 # making a loop to identify sample size for 80% power with medium efect

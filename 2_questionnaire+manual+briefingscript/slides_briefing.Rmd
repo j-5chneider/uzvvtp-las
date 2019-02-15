@@ -8,7 +8,9 @@ output:
   ioslides_presentation:
     widescreen: true
     smaller: true
-    css: webs/style.css
+    css: ../webs/style.css
+bibliography: ../webs/references.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa.csl
 ---
 
 ```{r setup, include=FALSE}
@@ -74,11 +76,12 @@ library(shiny)
 # ")
 
 ```
-<img src="webs/flowchart_angebot_nutzung.png" width="100%" />
+<img src="../webs/flowchart_angebot_nutzung.png" width="100%" />
+[@Syring.2016]
 
 ## Welche Überzeugungen? | 3 Hauptmodelle
 <div class = "container">
-  <div class="box"><img src="webs/transfer.png" height="75px" style="margin-top:25px" />  
+  <div class="box"><img src="../webs/transfer.png" height="75px" style="margin-top:25px" />  
 __Transfer__  
 \
 \
@@ -86,7 +89,7 @@ __Transfer__
 <span style="font-size:0.8em">Aus wissenschaftlichem Wissen werden __direkt__ Handlungsregeln abgeleitet.</span>
   </div>
   
-  <div class="box"><img src="webs/transform.png" height="75px" style="margin-top:25px" />  
+  <div class="box"><img src="../webs/transform.png" height="75px" style="margin-top:25px" />  
 __Transformation__  
 \
 \
@@ -94,7 +97,7 @@ __Transformation__
 <span style="font-size:0.8em">Wissenschaftliches Wissen wird für die Praxis in Handlungswissen __verändert__.</span>
   </div>
   
-  <div class="box"><img src="webs/relatio.png" height="100px" />  
+  <div class="box"><img src="../webs/relatio.png" height="100px" />  
 __Relationierung__  
 \
 \
@@ -109,7 +112,7 @@ __Relationierung__
 hierfür entwickeln wir einen FB, der mit Ihrer Hilfe erstellt werden kann
 </div>
 
-
+[@Radtke.2004]
 
 
 ## Wie entwickeln sich diese Überzeugungen | ... im Studienverlauf?
@@ -136,3 +139,5 @@ ggplot(plotdata, aes(x=Semester, y=y, color=ueb)) +
 ```
 
 # Vielen Dank für die Teilnahme :) | Fragen? <br /> juergen.schneider@uni-tuebingen.de  
+
+# Literatur

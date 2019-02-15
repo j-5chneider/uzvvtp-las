@@ -18,7 +18,7 @@ library(effsize)
     ## how high can we expect the loadings to be?
       # because we do not have pilot data, we get approximate estimates
       # from BilWiss data and its scale on beliefs of theory-practice relation
-      BilWiss <- read_sav("data/BilWiss_Laengsschnitt_MZP1234_SUF_1809-24a.sav") #we can't share this data as is is scientific usefile from another study
+      BilWiss <- read_sav("../data/BilWiss_Laengsschnitt_MZP1234_SUF_1809-24a.sav") #we can't share this data as is is scientific usefile from another study
       
       # we use the second measurement point because there is data available from both cohorts
       cfa_loadings_model <- "lv =~ tp01_3 + tp02r_3 + tp03_3 + tp04_3 + tp05_3 + tp06_3"
