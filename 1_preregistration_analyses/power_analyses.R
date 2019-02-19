@@ -456,6 +456,8 @@ library(effsize)
       #> 750          0.856  0.862  0.862  0.840  0.838  0.842  0.852  0.01250722 0.9916610 0.9907345 0.02847058
       #> 770          0.858  0.850  0.844  0.854  0.862  0.836  0.844  0.01242964 0.9919912 0.9911013 0.02827026
 
+    
+    
 
     
     
@@ -572,42 +574,10 @@ library(effsize)
     summary(Output_7F_2nd_reg)
     getCutoff(Output_7F_2nd_reg, 0.05)
     plotCutoff(Output_7F_2nd_reg, 0.05)
-        # results, some rows
-        # 690 0.802 0.784 0.778 0.796 0.788 0.818 0.822 0.01316585 0.9907838 0.9897598 0.02995081
-        # 710 0.790 0.828 0.802 0.842 0.842 0.838 0.852 0.01278678 0.9912922 0.9903247 0.02913166
-        # 730 0.828 0.818 0.838 0.798 0.820 0.820 0.800 0.01208556 0.9921801 0.9913112 0.02876481
-        # 750 0.856 0.862 0.862 0.840 0.838 0.842 0.852 0.01250722 0.9916610 0.9907345 0.02847058
-    
-    
-    
+
     
     
 
-
-# how many participants do we need for a power of .80?
-pwr.anova.test(k = 4,
-               # n = ?,
-               f = .1226, # derived from BilWiss Cohens d of 0.245295
-               sig.level = .05,
-               power = .8
-)
-
-
-# at what effect size do we get a power of 80% ?
-pwr.anova.test(k = 4,
-               n = 235, # 940 subjects evenly distributed over 4 groups
-               # f = ?,
-               sig.level = .05,
-               power = .8
-)
-
-# at what effect size do we get a power of 95% ?
-pwr.anova.test(k = 4,
-               n = 235, # 940 subjects evenly distributed over 4 groups
-               # f = .1,
-               sig.level = .05,
-               power = .95
-)
 
 ## Studie 1.2 (Überzeugungen zw. Fachsemestern [alle Semester]) ##################################################################
   # Querschnitt über alle Jahrgänge, Berücksichtigung der Panelstruktur
@@ -824,8 +794,64 @@ pwr.anova.test(k = 4,
     
     View(power_6)
     
+    
+  # └ Model 2.1 [semester as interval scaled, smaller sample] ####
+    
 
-## Studie 2 ####################################################################
+    # making a loop to check out power for different sample sizes
+    power_6.1 <- data.frame()
+    for (participants in 0:10) {
+      # parameters
+      predictor <- c(rep(2, times = 9+(9*participants)),     # 27 in 2nd bachelor semester (reference category)   
+                     rep(4, times = 9+(9*participants)),     # 27 in 4th bachelor semester
+                     rep(5, times = 6+(6*participants)),     # 18 in 5th bachelor semester
+                     rep(6, times = 2+(2*participants)),      # 6 in 1st master semester
+                     rep(7, times = 3+(3*participants)),      # 9 in 2nd master semester
+                     rep(8, times = 2+(2*participants)),      # 6 in 3rd master semester
+                     rep(9, times = 3+(3*participants))       # 9 in 4th master semester
+      )
+      
+      g <- c(rep(letters[1:3], times = 3+(3*participants)),    # seven panels (=letters) from design (see table 3 in grant proposal)
+             rep(letters[2:4], times = 3+(3*participants)), 
+             rep(letters[3:4], times = 3+(3*participants)), 
+             rep(letters[4:5], times = 1+participants), 
+             rep(letters[4:6], times = 1+participants), 
+             rep(letters[5:6], times = 1+participants), 
+             rep(letters[5:7], times = 1+participants)
+      )
+      
+      mydata3.1 <- data.frame(predictor, g) 
+      
+      b3 <- c(2, 0.1217353)     # fixed intercept and slopes, assuming effects from BilWiss
+      v <- 0.01              # random intercept variance (derived from BilWiss data) 0.000648
+      s <- 0.527             # residual standard deviation (derived from BilWiss data)
+      
+      model6 <- makeLmer(y ~ predictor + (1|g),
+                         fixef=b3,
+                         VarCorr=v,
+                         sigma=s,
+                         data=mydata3.1
+      )
+      
+      tmp <- powerSim(model6, nsim=500, seed = 123)
+      
+      power_6.1[participants+1, "n"] <- 15+(participants*15)
+      power_6.1[participants+1, "power_mean"] <- summary(tmp)$mean
+      power_6.1[participants+1, "power_lower"] <- summary(tmp)$lower
+      power_6.1[participants+1, "power_upper"] <- summary(tmp)$upper
+    }
+    
+    View(power_6.1)
+    # results do take quite a while, here are some rows 
+    #> n   power_mean power_lower power_upper
+    #> 15	 0.680      0.6371369	  0.7207188
+    #> 30	 0.932      0.9062704	  0.9524518
+    #> 45	 0.968      0.9485532	  0.9816008
+    #> 60	 0.992      0.9796444	  0.9978161
+    #> 75	 0.998      0.9889075	  0.9999494
+    
+
+## Studie 2 [semester as categorical] ####################################################################
 # example taken from https://cran.r-project.org/web/packages/simr/vignettes/fromscratch.html
 # example computed for master panel with 4 measurements
 
@@ -884,6 +910,516 @@ plot(PC9) + title(main = "Poweranalysis of RQ2 based on BilWiss data")
 
 # extracting n at which there is 80% Power
 PC9$nlevels[9]
+
+## Studie 2 [semester as interval scaled] ####################################################################
+# └ latent change model ####
+  popModel_7F_ch <- "
+            # LATENT VARIABLES
+                f1.1 =~ 0.654*i1_1_1 + 0.654*i1_1_2 + 0.654*i1_1_3 + 0.654*i1_1_4 + 0.654*i1_1_5
+                f2.1 =~ 0.654*i2_1_1 + 0.654*i2_1_2 + 0.654*i2_1_3 + 0.654*i2_1_4 + 0.654*i2_1_5
+                f3.1 =~ 0.654*i3_1_1 + 0.654*i3_1_2 + 0.654*i3_1_3 + 0.654*i3_1_4 + 0.654*i3_1_5
+                f4.1 =~ 0.654*i4_1_1 + 0.654*i4_1_2 + 0.654*i4_1_3 + 0.654*i4_1_4 + 0.654*i4_1_5
+                f5.1 =~ 0.654*i5_1_1 + 0.654*i5_1_2 + 0.654*i5_1_3 + 0.654*i5_1_4 + 0.654*i5_1_5
+                f6.1 =~ 0.654*i6_1_1 + 0.654*i6_1_2 + 0.654*i6_1_3 + 0.654*i6_1_4 + 0.654*i6_1_5
+                f7.1 =~ 0.654*i7_1_1 + 0.654*i7_1_2 + 0.654*i7_1_3 + 0.654*i7_1_4 + 0.654*i7_1_5
+                
+                f1.2 =~ 0.654*i1_2_1 + 0.654*i1_2_2 + 0.654*i1_2_3 + 0.654*i1_2_4 + 0.654*i1_2_5
+                f2.2 =~ 0.654*i2_2_1 + 0.654*i2_2_2 + 0.654*i2_2_3 + 0.654*i2_2_4 + 0.654*i2_2_5
+                f3.2 =~ 0.654*i3_2_1 + 0.654*i3_2_2 + 0.654*i3_2_3 + 0.654*i3_2_4 + 0.654*i3_2_5
+                f4.2 =~ 0.654*i4_2_1 + 0.654*i4_2_2 + 0.654*i4_2_3 + 0.654*i4_2_4 + 0.654*i4_2_5
+                f5.2 =~ 0.654*i5_2_1 + 0.654*i5_2_2 + 0.654*i5_2_3 + 0.654*i5_2_4 + 0.654*i5_2_5
+                f6.2 =~ 0.654*i6_2_1 + 0.654*i6_2_2 + 0.654*i6_2_3 + 0.654*i6_2_4 + 0.654*i6_2_5
+                f7.2 =~ 0.654*i7_2_1 + 0.654*i7_2_2 + 0.654*i7_2_3 + 0.654*i7_2_4 + 0.654*i7_2_5
+                
+                f1.3 =~ 0.654*i1_3_1 + 0.654*i1_3_2 + 0.654*i1_3_3 + 0.654*i1_3_4 + 0.654*i1_3_5
+                f2.3 =~ 0.654*i2_3_1 + 0.654*i2_3_2 + 0.654*i2_3_3 + 0.654*i2_3_4 + 0.654*i2_3_5
+                f3.3 =~ 0.654*i3_3_1 + 0.654*i3_3_2 + 0.654*i3_3_3 + 0.654*i3_3_4 + 0.654*i3_3_5
+                f4.3 =~ 0.654*i4_3_1 + 0.654*i4_3_2 + 0.654*i4_3_3 + 0.654*i4_3_4 + 0.654*i4_3_5
+                f5.3 =~ 0.654*i5_3_1 + 0.654*i5_3_2 + 0.654*i5_3_3 + 0.654*i5_3_4 + 0.654*i5_3_5
+                f6.3 =~ 0.654*i6_3_1 + 0.654*i6_3_2 + 0.654*i6_3_3 + 0.654*i6_3_4 + 0.654*i6_3_5
+                f7.3 =~ 0.654*i7_3_1 + 0.654*i7_3_2 + 0.654*i7_3_3 + 0.654*i7_3_4 + 0.654*i7_3_5
+                
+                change1.1 =~ 1*f1.2 + 1*f1.3
+                change1.2 =~ 1*f1.3
+                
+                change2.1 =~ 1*f2.2 + 1*f2.3
+                change2.2 =~ 1*f2.3
+                
+                change3.1 =~ 1*f3.2 + 1*f3.3
+                change3.2 =~ 1*f3.3
+                
+                change4.1 =~ 1*f4.2 + 1*f4.3
+                change4.2 =~ 1*f4.3
+                
+                change5.1 =~ 1*f5.2 + 1*f5.3
+                change5.2 =~ 1*f5.3
+                
+                change6.1 =~ 1*f6.2 + 1*f6.3
+                change6.2 =~ 1*f6.3
+                
+                change7.1 =~ 1*f7.2 + 1*f7.3
+                change7.2 =~ 1*f7.3
+  
+            # VARIANCES
+                f1.1 ~~ 1*f1.1
+                f2.1 ~~ 1*f2.1
+                f3.1 ~~ 1*f3.1
+                f4.1 ~~ 1*f4.1
+                f5.1 ~~ 1*f5.1
+                f6.1 ~~ 1*f6.1
+                f7.1 ~~ 1*f7.1
+                
+                # f1.2 ~~ 0*f1.2
+                # f2.2 ~~ 0*f2.2
+                # f3.2 ~~ 0*f3.2
+                # f4.2 ~~ 0*f4.2
+                # f5.2 ~~ 0*f5.2
+                # f6.2 ~~ 0*f6.2
+                # f7.2 ~~ 0*f7.2
+                # 
+                # f1.3 ~~ 0*f1.3
+                # f2.3 ~~ 0*f2.3
+                # f3.3 ~~ 0*f3.3
+                # f4.3 ~~ 0*f4.3
+                # f5.3 ~~ 0*f5.3
+                # f6.3 ~~ 0*f6.3
+                # f7.3 ~~ 0*f7.3
+                
+                change1.1 ~~ 0.01*change1.1
+                change1.2 ~~ 0.01*change1.2
+                change2.1 ~~ 0.01*change2.1
+                change2.2 ~~ 0.01*change2.2
+                change3.1 ~~ 0.01*change3.1
+                change3.2 ~~ 0.01*change3.2
+                change4.1 ~~ 0.01*change4.1
+                change4.2 ~~ 0.01*change4.2
+                change5.1 ~~ 0.01*change5.1
+                change5.2 ~~ 0.01*change5.2
+                change6.1 ~~ 0.01*change6.1
+                change6.2 ~~ 0.01*change6.2
+                change7.1 ~~ 0.01*change7.1
+                change7.2 ~~ 0.01*change7.2
+  
+                i1_1_1 ~~ 0.573*i1_1_1   # T1
+                i1_1_2 ~~ 0.573*i1_1_2
+                i1_1_3 ~~ 0.573*i1_1_3
+                i1_1_4 ~~ 0.573*i1_1_4
+                i1_1_5 ~~ 0.573*i1_1_5
+  
+                i2_1_1 ~~ 0.573*i2_1_1
+                i2_1_2 ~~ 0.573*i2_1_2
+                i2_1_3 ~~ 0.573*i2_1_3
+                i2_1_4 ~~ 0.573*i2_1_4
+                i2_1_5 ~~ 0.573*i2_1_5
+  
+                i3_1_1 ~~ 0.573*i3_1_1
+                i3_1_2 ~~ 0.573*i3_1_2
+                i3_1_3 ~~ 0.573*i3_1_3
+                i3_1_4 ~~ 0.573*i3_1_4
+                i3_1_5 ~~ 0.573*i3_1_5
+  
+                i4_1_1 ~~ 0.573*i4_1_1
+                i4_1_2 ~~ 0.573*i4_1_2
+                i4_1_3 ~~ 0.573*i4_1_3
+                i4_1_4 ~~ 0.573*i4_1_4
+                i4_1_5 ~~ 0.573*i4_1_5
+  
+                i5_1_1 ~~ 0.573*i5_1_1
+                i5_1_2 ~~ 0.573*i5_1_2
+                i5_1_3 ~~ 0.573*i5_1_3
+                i5_1_4 ~~ 0.573*i5_1_4
+                i5_1_5 ~~ 0.573*i5_1_5
+  
+                i6_1_1 ~~ 0.573*i6_1_1
+                i6_1_2 ~~ 0.573*i6_1_2
+                i6_1_3 ~~ 0.573*i6_1_3
+                i6_1_4 ~~ 0.573*i6_1_4
+                i6_1_5 ~~ 0.573*i6_1_5
+  
+                i7_1_1 ~~ 0.573*i7_1_1
+                i7_1_2 ~~ 0.573*i7_1_2
+                i7_1_3 ~~ 0.573*i7_1_3
+                i7_1_4 ~~ 0.573*i7_1_4
+                i7_1_5 ~~ 0.573*i7_1_5
+                
+                i1_2_1 ~~ 0.573*i1_2_1   # T2
+                i1_2_2 ~~ 0.573*i1_2_2
+                i1_2_3 ~~ 0.573*i1_2_3
+                i1_2_4 ~~ 0.573*i1_2_4
+                i1_2_5 ~~ 0.573*i1_2_5
+  
+                i2_2_1 ~~ 0.573*i2_2_1
+                i2_2_2 ~~ 0.573*i2_2_2
+                i2_2_3 ~~ 0.573*i2_2_3
+                i2_2_4 ~~ 0.573*i2_2_4
+                i2_2_5 ~~ 0.573*i2_2_5
+  
+                i3_2_1 ~~ 0.573*i3_2_1
+                i3_2_2 ~~ 0.573*i3_2_2
+                i3_2_3 ~~ 0.573*i3_2_3
+                i3_2_4 ~~ 0.573*i3_2_4
+                i3_2_5 ~~ 0.573*i3_2_5
+  
+                i4_2_1 ~~ 0.573*i4_2_1
+                i4_2_2 ~~ 0.573*i4_2_2
+                i4_2_3 ~~ 0.573*i4_2_3
+                i4_2_4 ~~ 0.573*i4_2_4
+                i4_2_5 ~~ 0.573*i4_2_5
+  
+                i5_2_1 ~~ 0.573*i5_2_1
+                i5_2_2 ~~ 0.573*i5_2_2
+                i5_2_3 ~~ 0.573*i5_2_3
+                i5_2_4 ~~ 0.573*i5_2_4
+                i5_2_5 ~~ 0.573*i5_2_5
+  
+                i6_2_1 ~~ 0.573*i6_2_1
+                i6_2_2 ~~ 0.573*i6_2_2
+                i6_2_3 ~~ 0.573*i6_2_3
+                i6_2_4 ~~ 0.573*i6_2_4
+                i6_2_5 ~~ 0.573*i6_2_5
+  
+                i7_2_1 ~~ 0.573*i7_2_1
+                i7_2_2 ~~ 0.573*i7_2_2
+                i7_2_3 ~~ 0.573*i7_2_3
+                i7_2_4 ~~ 0.573*i7_2_4
+                i7_2_5 ~~ 0.573*i7_2_5
+                
+                i1_3_1 ~~ 0.573*i1_3_1   # T3
+                i1_3_2 ~~ 0.573*i1_3_2
+                i1_3_3 ~~ 0.573*i1_3_3
+                i1_3_4 ~~ 0.573*i1_3_4
+                i1_3_5 ~~ 0.573*i1_3_5
+  
+                i2_3_1 ~~ 0.573*i2_3_1
+                i2_3_2 ~~ 0.573*i2_3_2
+                i2_3_3 ~~ 0.573*i2_3_3
+                i2_3_4 ~~ 0.573*i2_3_4
+                i2_3_5 ~~ 0.573*i2_3_5
+  
+                i3_3_1 ~~ 0.573*i3_3_1
+                i3_3_2 ~~ 0.573*i3_3_2
+                i3_3_3 ~~ 0.573*i3_3_3
+                i3_3_4 ~~ 0.573*i3_3_4
+                i3_3_5 ~~ 0.573*i3_3_5
+  
+                i4_3_1 ~~ 0.573*i4_3_1
+                i4_3_2 ~~ 0.573*i4_3_2
+                i4_3_3 ~~ 0.573*i4_3_3
+                i4_3_4 ~~ 0.573*i4_3_4
+                i4_3_5 ~~ 0.573*i4_3_5
+  
+                i5_3_1 ~~ 0.573*i5_3_1
+                i5_3_2 ~~ 0.573*i5_3_2
+                i5_3_3 ~~ 0.573*i5_3_3
+                i5_3_4 ~~ 0.573*i5_3_4
+                i5_3_5 ~~ 0.573*i5_3_5
+  
+                i6_3_1 ~~ 0.573*i6_3_1
+                i6_3_2 ~~ 0.573*i6_3_2
+                i6_3_3 ~~ 0.573*i6_3_3
+                i6_3_4 ~~ 0.573*i6_3_4
+                i6_3_5 ~~ 0.573*i6_3_5
+  
+                i7_3_1 ~~ 0.573*i7_3_1
+                i7_3_2 ~~ 0.573*i7_3_2
+                i7_3_3 ~~ 0.573*i7_3_3
+                i7_3_4 ~~ 0.573*i7_3_4
+                i7_3_5 ~~ 0.573*i7_3_5
+  
+            # FACTOR CORRELATIONS
+                f1.1 ~~ 0.6*f2.1   # T1
+                f1.1 ~~ 0.4*f3.1
+                f1.1 ~~ 0.2*f4.1
+                f1.1 ~~ 0.0*f5.1
+                f1.1 ~~ -0.2*f6.1
+                f1.1 ~~ -0.4*f7.1
+                f2.1 ~~ 0.6*f3.1
+                f2.1 ~~ 0.4*f4.1
+                f2.1 ~~ 0.2*f5.1
+                f2.1 ~~ 0*f6.1
+                f2.1 ~~ -0.2*f7.1
+                f3.1 ~~ 0.6*f4.1
+                f3.1 ~~ 0.4*f5.1
+                f3.1 ~~ 0.2*f6.1
+                f3.1 ~~ 0*f7.1
+                f4.1 ~~ 0.6*f5.1
+                f4.1 ~~ 0.4*f6.1
+                f4.1 ~~ 0.2*f7.1
+                f5.1 ~~ 0.6*f6.1
+                f5.1 ~~ 0.4*f7.1
+                f6.1 ~~ 0.6*f7.1
+                
+                f1.2 ~~ 0.6*f2.2   # T2
+                f1.2 ~~ 0.4*f3.2
+                f1.2 ~~ 0.2*f4.2
+                f1.2 ~~ 0.0*f5.2
+                f1.2 ~~ -0.2*f6.2
+                f1.2 ~~ -0.4*f7.2
+                f2.2 ~~ 0.6*f3.2
+                f2.2 ~~ 0.4*f4.2
+                f2.2 ~~ 0.2*f5.2
+                f2.2 ~~ 0*f6.2
+                f2.2 ~~ -0.2*f7.2
+                f3.2 ~~ 0.6*f4.2
+                f3.2 ~~ 0.4*f5.2
+                f3.2 ~~ 0.2*f6.2
+                f3.2 ~~ 0*f7.2
+                f4.2 ~~ 0.6*f5.2
+                f4.2 ~~ 0.4*f6.2
+                f4.2 ~~ 0.2*f7.2
+                f5.2 ~~ 0.6*f6.2
+                f5.2 ~~ 0.4*f7.2
+                f6.2 ~~ 0.6*f7.2
+                
+                f1.3 ~~ 0.6*f2.3    # T3
+                f1.3 ~~ 0.4*f3.3
+                f1.3 ~~ 0.2*f4.3
+                f1.3 ~~ 0.0*f5.3
+                f1.3 ~~ -0.2*f6.3
+                f1.3 ~~ -0.4*f7.3
+                f2.3 ~~ 0.6*f3.3
+                f2.3 ~~ 0.4*f4.3
+                f2.3 ~~ 0.2*f5.3
+                f2.3 ~~ 0*f6.3
+                f2.3 ~~ -0.2*f7.3
+                f3.3 ~~ 0.6*f4.3
+                f3.3 ~~ 0.4*f5.3
+                f3.3 ~~ 0.2*f6.3
+                f3.3 ~~ 0*f7.3
+                f4.3 ~~ 0.6*f5.3
+                f4.3 ~~ 0.4*f6.3
+                f4.3 ~~ 0.2*f7.3
+                f5.3 ~~ 0.6*f6.3
+                f5.3 ~~ 0.4*f7.3
+                f6.3 ~~ 0.6*f7.3
+                
+            # MEANS / INTERCEPTS
+                change1.1 ~ 0.1217353*1
+                change1.2 ~ 0.1217353*1
+                change2.1 ~ 0.1217353*1
+                change2.2 ~ 0.1217353*1
+                change3.1 ~ 0.1217353*1
+                change3.2 ~ 0.1217353*1
+                change4.1 ~ 0.1217353*1
+                change4.2 ~ 0.1217353*1
+                change5.1 ~ 0.1217353*1
+                change5.2 ~ 0.1217353*1
+                change6.1 ~ 0.1217353*1
+                change6.2 ~ 0.1217353*1
+                change7.1 ~ 0.1217353*1
+                change7.2 ~ 0.1217353*1
+              
+            # REGRESSION PATHS
+                f1.2 ~ 1*f1.1
+                f1.3 ~ 1*f1.1
+                f1.3 ~ 1*f1.2
+                
+                f2.2 ~ 1*f2.1
+                f2.3 ~ 1*f2.1
+                f2.3 ~ 1*f2.2
+                
+                f3.2 ~ 1*f3.1
+                f3.3 ~ 1*f3.1
+                f3.3 ~ 1*f3.2
+                
+                f4.2 ~ 1*f4.1
+                f4.3 ~ 1*f4.1
+                f4.3 ~ 1*f4.2
+                
+                f5.2 ~ 1*f5.1
+                f5.3 ~ 1*f5.1
+                f5.3 ~ 1*f5.2
+                
+                f6.2 ~ 1*f6.1
+                f6.3 ~ 1*f6.1
+                f6.3 ~ 1*f6.2
+                
+                f7.2 ~ 1*f7.1
+                f7.3 ~ 1*f7.1
+                f7.3 ~ 1*f7.2
+      "
+  
+  analyzeModel_7F_ch <- "
+            # LATENT VARIABLES
+                f1.1 =~ lambda1_1*i1_1_1 + lambda1_2*i1_1_2 + lambda1_3*i1_1_3 + lambda1_4*i1_1_4 + lambda1_5*i1_1_5
+                f2.1 =~ lambda2_1*i2_1_1 + lambda2_2*i2_1_2 + lambda2_3*i2_1_3 + lambda2_4*i2_1_4 + lambda2_5*i2_1_5
+                f3.1 =~ lambda3_1*i3_1_1 + lambda3_2*i3_1_2 + lambda3_3*i3_1_3 + lambda3_4*i3_1_4 + lambda3_5*i3_1_5
+                f4.1 =~ lambda4_1*i4_1_1 + lambda4_2*i4_1_2 + lambda4_3*i4_1_3 + lambda4_4*i4_1_4 + lambda4_5*i4_1_5
+                f5.1 =~ lambda5_1*i5_1_1 + lambda5_2*i5_1_2 + lambda5_3*i5_1_3 + lambda5_4*i5_1_4 + lambda5_5*i5_1_5
+                f6.1 =~ lambda6_1*i6_1_1 + lambda6_2*i6_1_2 + lambda6_3*i6_1_3 + lambda6_4*i6_1_4 + lambda6_5*i6_1_5
+                f7.1 =~ lambda7_1*i7_1_1 + lambda7_2*i7_1_2 + lambda7_3*i7_1_3 + lambda7_4*i7_1_4 + lambda7_5*i7_1_5
+                
+                f1.2 =~ lambda1_1*i1_2_1 + lambda1_2*i1_2_2 + lambda1_3*i1_2_3 + lambda1_4*i1_2_4 + lambda1_5*i1_2_5
+                f2.2 =~ lambda2_1*i2_2_1 + lambda2_2*i2_2_2 + lambda2_3*i2_2_3 + lambda2_4*i2_2_4 + lambda2_5*i2_2_5
+                f3.2 =~ lambda3_1*i3_2_1 + lambda3_2*i3_2_2 + lambda3_3*i3_2_3 + lambda3_4*i3_2_4 + lambda3_5*i3_2_5
+                f4.2 =~ lambda4_1*i4_2_1 + lambda4_2*i4_2_2 + lambda4_3*i4_2_3 + lambda4_4*i4_2_4 + lambda4_5*i4_2_5
+                f5.2 =~ lambda5_1*i5_2_1 + lambda5_2*i5_2_2 + lambda5_3*i5_2_3 + lambda5_4*i5_2_4 + lambda5_5*i5_2_5
+                f6.2 =~ lambda6_1*i6_2_1 + lambda6_2*i6_2_2 + lambda6_3*i6_2_3 + lambda6_4*i6_2_4 + lambda6_5*i6_2_5
+                f7.2 =~ lambda7_1*i7_2_1 + lambda7_2*i7_2_2 + lambda7_3*i7_2_3 + lambda7_4*i7_2_4 + lambda7_5*i7_2_5
+                
+                f1.3 =~ lambda1_1*i1_3_1 + lambda1_2*i1_3_2 + lambda1_3*i1_3_3 + lambda1_4*i1_3_4 + lambda1_5*i1_3_5
+                f2.3 =~ lambda2_1*i2_3_1 + lambda2_2*i2_3_2 + lambda2_3*i2_3_3 + lambda2_4*i2_3_4 + lambda2_5*i2_3_5
+                f3.3 =~ lambda3_1*i3_3_1 + lambda3_2*i3_3_2 + lambda3_3*i3_3_3 + lambda3_4*i3_3_4 + lambda3_5*i3_3_5
+                f4.3 =~ lambda4_1*i4_3_1 + lambda4_2*i4_3_2 + lambda4_3*i4_3_3 + lambda4_4*i4_3_4 + lambda4_5*i4_3_5
+                f5.3 =~ lambda5_1*i5_3_1 + lambda5_2*i5_3_2 + lambda5_3*i5_3_3 + lambda5_4*i5_3_4 + lambda5_5*i5_3_5
+                f6.3 =~ lambda6_1*i6_3_1 + lambda6_2*i6_3_2 + lambda6_3*i6_3_3 + lambda6_4*i6_3_4 + lambda6_5*i6_3_5
+                f7.3 =~ lambda7_1*i7_3_1 + lambda7_2*i7_3_2 + lambda7_3*i7_3_3 + lambda7_4*i7_3_4 + lambda7_5*i7_3_5
+                
+                change1.1 =~ 1*f1.2 + 1*f1.3
+                change1.2 =~ 1*f1.3
+                
+                change2.1 =~ 1*f2.2 + 1*f2.3
+                change2.2 =~ 1*f2.3
+                
+                change3.1 =~ 1*f3.2 + 1*f3.3
+                change3.2 =~ 1*f3.3
+                
+                change4.1 =~ 1*f4.2 + 1*f4.3
+                change4.2 =~ 1*f4.3
+                
+                change5.1 =~ 1*f5.2 + 1*f5.3
+                change5.2 =~ 1*f5.3
+                
+                change6.1 =~ 1*f6.2 + 1*f6.3
+                change6.2 =~ 1*f6.3
+                
+                change7.1 =~ 1*f7.2 + 1*f7.3
+                change7.2 =~ 1*f7.3
+                
+            # VARIANCES
+                f1.2 ~~ 0*f1.2
+                f2.2 ~~ 0*f2.2
+                f3.2 ~~ 0*f3.2
+                f4.2 ~~ 0*f4.2
+                f5.2 ~~ 0*f5.2
+                f6.2 ~~ 0*f6.2
+                f7.2 ~~ 0*f7.2
+                
+                f1.3 ~~ 0*f1.3
+                f2.3 ~~ 0*f2.3
+                f3.3 ~~ 0*f3.3
+                f4.3 ~~ 0*f4.3
+                f5.3 ~~ 0*f5.3
+                f6.3 ~~ 0*f6.3
+                f7.3 ~~ 0*f7.3
+                
+            # REGRESSION PATHS
+                f1.2 ~ 1*f1.1
+                f1.3 ~ 1*f1.1
+                f1.3 ~ 1*f1.2
+                
+                f2.2 ~ 1*f2.1
+                f2.3 ~ 1*f2.1
+                f2.3 ~ 1*f2.2
+                
+                f3.2 ~ 1*f3.1
+                f3.3 ~ 1*f3.1
+                f3.3 ~ 1*f3.2
+                
+                f4.2 ~ 1*f4.1
+                f4.3 ~ 1*f4.1
+                f4.3 ~ 1*f4.2
+                
+                f5.2 ~ 1*f5.1
+                f5.3 ~ 1*f5.1
+                f5.3 ~ 1*f5.2
+                
+                f6.2 ~ 1*f6.1
+                f6.3 ~ 1*f6.1
+                f6.3 ~ 1*f6.2
+                
+                f7.2 ~ 1*f7.1
+                f7.3 ~ 1*f7.1
+                f7.3 ~ 1*f7.2
+      "
+  
+  # making a loop to identify sample size for 80% power with effect from Bilwiss
+  Output_7F_ch <- data.frame()
+  
+  for(participants in seq(from = 150, to = 950, by = 20)) {
+    
+    Output_tmp <- sim(nRep = 500, 
+                      model = analyzeModel_7F_ch, 
+                      n = participants, 
+                      generate = popModel_7F_ch, 
+                      lavaanfun = "change", 
+                      std.lv = T, 
+                      seed = 123)
+    
+    Output_7F_reg[(participants-130)/20, "samplesize"] <- participants
+    Output_7F_reg[(participants-130)/20, "f1"] <- summaryParam(Output_tmp)[36, 4] # power semester on f1
+    Output_7F_reg[(participants-130)/20, "f2"] <- summaryParam(Output_tmp)[37, 4] # power semester on f2
+    Output_7F_reg[(participants-130)/20, "f3"] <- summaryParam(Output_tmp)[38, 4] # power semester on f3
+    Output_7F_reg[(participants-130)/20, "f4"] <- summaryParam(Output_tmp)[39, 4] # power semester on f4
+    Output_7F_reg[(participants-130)/20, "f5"] <- summaryParam(Output_tmp)[40, 4] # power semester on f5
+    Output_7F_reg[(participants-130)/20, "f6"] <- summaryParam(Output_tmp)[41, 4] # power semester on f6
+    Output_7F_reg[(participants-130)/20, "f7"] <- summaryParam(Output_tmp)[42, 4] # power semester on f7
+    Output_7F_reg[(participants-130)/20, "rmsea"] <- getCutoff(Output_tmp, 0.05)[4]
+    Output_7F_reg[(participants-130)/20, "cfi"] <- getCutoff(Output_tmp, 0.05)[5]
+    Output_7F_reg[(participants-130)/20, "tli"] <- getCutoff(Output_tmp, 0.05)[6]
+    Output_7F_reg[(participants-130)/20, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
+  }
+  
+  View(Output_7F_reg)
+
+
+
+## └ mixed effects model (varying intercept) ####
+  # example taken from https://cran.r-project.org/web/packages/simr/vignettes/fromscratch.html
+  # example computed for master panel with 4 measurements
+  
+  
+  # making a loop to check out power for different sample sizes
+  power_9 <- data.frame()
+  for (participants in 0:6) {
+    # parameters
+    semester <- c(rep(1, times = 24 + participants), # students in their 1st,2nd,3rd or 4th semester
+                  rep(2, times = 24 + participants), 
+                  rep(3, times = 24 + participants), 
+                  rep(4, times = 24 + participants)) 
+    
+    g <- c(rep(1:(24 + participants), times = 4))          # clustered within person, 4 measurement times
+    
+    mydata3 <- data.frame(semester, g)
+    
+    b <- c(2, 0.1217353) # fixed intercept and slopes, assuming effects from BilWiss
+    v <- 0.01              # random intercept variance
+    s <- 0.527                # residual standard deviation
+    
+    model9 <- makeLmer(y ~ semester + (1|g),
+                       fixef=b,
+                       VarCorr=v,
+                       sigma=s,
+                       data=mydata3
+    )
+  
+    # start simulation
+    tmp <- powerSim(model9, nsim=500, seed = 123)
+    
+    # saving results in data.frame
+    power_9[participants+1, "n"] <- 24+(participants*4)
+    power_9[participants+1, "power_mean"] <- summary(tmp)$mean
+    power_9[participants+1, "power_lower"] <- summary(tmp)$lower
+    power_9[participants+1, "power_upper"] <- summary(tmp)$upper
+  }
+  
+  View(power_9)
+  # results do take quite a while, here are some rows 
+  #> n  power_mean  power_lower  power_upper
+  #> 24	0.648	      0.6043586	   0.6898795
+  #> 28	0.712	      0.6701349	   0.7513373
+  #> 32	0.760	      0.7200905	   0.7968034
+  #> 36	0.732	      0.6908790	   0.7703527
+  #> 40	0.778	      0.7389832	   0.8136927
+  #> 44	0.798	      0.7600903	   0.8323421
+  #> 48	0.818	      0.7813315	   0.8508561
+  
+  
+  
+  # Plotting Power for different effect sizes
+  PC9 <- powerCurve(model9, along = "g", progress = F)
+  plot(PC9) + title(main = "Poweranalysis of RQ2 based on BilWiss data")
+
 
 
 ## Studie 3 ####################################################################
