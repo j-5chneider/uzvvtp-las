@@ -1484,8 +1484,8 @@ PC9$nlevels[9]
     # f1.2 ~~ 0*f1.2
     # f1.3 ~~ 0*f1.3
 
-    change1.1 ~~ 0.01*change1.1
-    change1.2 ~~ 0.01*change1.2
+    change1.1 ~~ 0.2*change1.1
+    change1.2 ~~ 0.2*change1.2
 
     i1_1_1 ~~ 1*i1_1_1   # T1
     i1_1_2 ~~ 1*i1_1_2
@@ -1509,35 +1509,34 @@ PC9$nlevels[9]
   # FACTOR CORRELATIONS
     f1.1 ~~ 0.1*change1.1
     f1.1 ~~ 0.1*change1.2
-    change1.2 ~~ 0.1*f1.2
-    # change1.1 ~~ 0*change1.2   # DOES THIS MAKE SENSE?
+    f1.2 ~~ 0.1*change1.2
+    change1.1 ~~ -0.1*change1.2   # DOES THIS MAKE SENSE?
 
 
   # MEANS / INTERCEPTS
     change1.1 ~ 0.1217353*1
     change1.2 ~ 0.1217353*1
 
-    i1_1_1 ~ 0*1
-    i1_1_2 ~ 0*1
-    i1_1_3 ~ 0*1
-    i1_1_4 ~ 0*1
-    i1_1_5 ~ 0*1
-    i1_2_1 ~ 0*1
-    i1_2_2 ~ 0*1
-    i1_2_3 ~ 0*1
-    i1_2_4 ~ 0*1
-    i1_2_5 ~ 0*1
-    i1_3_1 ~ 0*1
-    i1_3_2 ~ 0*1
-    i1_3_3 ~ 0*1
-    i1_3_4 ~ 0*1
-    i1_3_5 ~ 0*1
+    # i1_1_1 ~ 0*1
+    # i1_1_2 ~ 0*1
+    # i1_1_3 ~ 0*1
+    # i1_1_4 ~ 0*1
+    # i1_1_5 ~ 0*1
+    # i1_2_1 ~ 0*1
+    # i1_2_2 ~ 0*1
+    # i1_2_3 ~ 0*1
+    # i1_2_4 ~ 0*1
+    # i1_2_5 ~ 0*1
+    # i1_3_1 ~ 0*1
+    # i1_3_2 ~ 0*1
+    # i1_3_3 ~ 0*1
+    # i1_3_4 ~ 0*1
+    # i1_3_5 ~ 0*1
 
   
   # REGRESSION PATHS
     f1.2 ~ 1*f1.1
     f1.3 ~ 1*f1.1
-    f1.3 ~ 1*f1.2
   "
   
   analyzeModel_7F_ch1 <- "
@@ -1550,25 +1549,25 @@ PC9$nlevels[9]
       change1.2 =~ 1*f1.3
     
     # MEANS / INTERCEPTS
-        i1_1_1 ~ xi*1
-        i1_1_2 ~ xi*1
-        i1_1_3 ~ xi*1
-        i1_1_4 ~ xi*1
-        i1_1_5 ~ xi*1
-        i1_2_1 ~ xi*1
-        i1_2_2 ~ xi*1
-        i1_2_3 ~ xi*1
-        i1_2_4 ~ xi*1
-        i1_2_5 ~ xi*1
-        i1_3_1 ~ xi*1
-        i1_3_2 ~ xi*1
-        i1_3_3 ~ xi*1
-        i1_3_4 ~ xi*1
-        i1_3_5 ~ xi*1
+        # i1_1_1 ~ xi*1
+        # i1_1_2 ~ xi*1
+        # i1_1_3 ~ xi*1
+        # i1_1_4 ~ xi*1
+        # i1_1_5 ~ xi*1
+        # i1_2_1 ~ xi*1
+        # i1_2_2 ~ xi*1
+        # i1_2_3 ~ xi*1
+        # i1_2_4 ~ xi*1
+        # i1_2_5 ~ xi*1
+        # i1_3_1 ~ xi*1
+        # i1_3_2 ~ xi*1
+        # i1_3_3 ~ xi*1
+        # i1_3_4 ~ xi*1
+        # i1_3_5 ~ xi*1
 
   # FACTOR CORRELATIONS
         change1.2 ~~ f1.2
-        # change1.1 ~~ 0*change1.2
+        change1.1 ~~ change1.2
     
     # VARIANCES
       # f1.1 ~~ 1*f1.1
@@ -1683,8 +1682,8 @@ pwr.f2.test(u = 4,    # p-1 (predictors -1): treatment, 2*beliefs, 2*interaction
             sig.level = .05,
             power = .80
 )
-
-
+ 
+  
 # how many participants do we need for a power of .95?
 pwr.f2.test(u = 4,    # p-1 (predictors -1): treatment, 2*beliefs, 2*interactions
             f2 = .15,  #f²= {.02 (small); .15 (medium); .35 (large)} (Cohen, 1988)
