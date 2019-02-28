@@ -1127,7 +1127,7 @@ PC9$nlevels[9]
                 i7_3_5 ~~ 0.573*i7_3_5
   
             # FACTOR CORRELATIONS
-                f1.1 ~~ 0.6*f2.1   # T1
+                f1.1 ~~ 0.6*f2.1   # factors T1
                 f1.1 ~~ 0.4*f3.1
                 f1.1 ~~ 0.2*f4.1
                 f1.1 ~~ 0.0*f5.1
@@ -1148,50 +1148,155 @@ PC9$nlevels[9]
                 f5.1 ~~ 0.6*f6.1
                 f5.1 ~~ 0.4*f7.1
                 f6.1 ~~ 0.6*f7.1
+
+                f1.1 ~~ 0.1*change1.1   # change1
+                f1.1 ~~ 0.1*change1.2
+                f2.1 ~~ 0*change1.1
+                f2.1 ~~ 0*change1.2
+                f3.1 ~~ 0*change1.1
+                f3.1 ~~ 0*change1.2
+                f4.1 ~~ 0*change1.1
+                f4.1 ~~ 0*change1.2
+                f5.1 ~~ 0*change1.1
+                f5.1 ~~ 0*change1.2
+                f6.1 ~~ 0*change1.1
+                f6.1 ~~ 0*change1.2
+                f7.1 ~~ 0*change1.1
+                f7.1 ~~ 0*change1.2
+
+                f1.1 ~~ 0*change2.1   # change2
+                f1.1 ~~ 0*change2.2
+                f2.1 ~~ 0.1*change2.1
+                f2.1 ~~ 0.1*change2.2
+                f3.1 ~~ 0*change2.1
+                f3.1 ~~ 0*change2.2
+                f4.1 ~~ 0*change2.1
+                f4.1 ~~ 0*change2.2
+                f5.1 ~~ 0*change2.1
+                f5.1 ~~ 0*change2.2
+                f6.1 ~~ 0*change2.1
+                f6.1 ~~ 0*change2.2
+                f7.1 ~~ 0*change2.1
+                f7.1 ~~ 0*change2.2
+
+                f1.1 ~~ 0*change3.1   # change3
+                f1.1 ~~ 0*change3.2
+                f2.1 ~~ 0*change3.1
+                f2.1 ~~ 0*change3.2
+                f3.1 ~~ 0.1*change3.1
+                f3.1 ~~ 0.1*change3.2
+                f4.1 ~~ 0*change3.1
+                f4.1 ~~ 0*change3.2
+                f5.1 ~~ 0*change3.1
+                f5.1 ~~ 0*change3.2
+                f6.1 ~~ 0*change3.1
+                f6.1 ~~ 0*change3.2
+                f7.1 ~~ 0*change3.1
+                f7.1 ~~ 0*change3.2
+
+                f1.1 ~~ 0*change4.1   # change4
+                f1.1 ~~ 0*change4.2
+                f2.1 ~~ 0*change4.1
+                f2.1 ~~ 0*change4.2
+                f3.1 ~~ 0*change4.1
+                f3.1 ~~ 0*change4.2
+                f4.1 ~~ 0.1*change4.1
+                f4.1 ~~ 0.1*change4.2
+                f5.1 ~~ 0*change4.1
+                f5.1 ~~ 0*change4.2
+                f6.1 ~~ 0*change4.1
+                f6.1 ~~ 0*change4.2
+                f7.1 ~~ 0*change4.1
+                f7.1 ~~ 0*change4.2
+
+                f1.1 ~~ 0*change1.1   # change5
+                f1.1 ~~ 0*change1.2
+                f2.1 ~~ 0*change1.1
+                f2.1 ~~ 0*change1.2
+                f3.1 ~~ 0*change1.1
+                f3.1 ~~ 0*change1.2
+                f4.1 ~~ 0*change1.1
+                f4.1 ~~ 0*change1.2
+                f5.1 ~~ 0.1*change1.1
+                f5.1 ~~ 0.1*change1.2
+                f6.1 ~~ 0*change1.1
+                f6.1 ~~ 0*change1.2
+                f7.1 ~~ 0*change1.1
+                f7.1 ~~ 0*change1.2
+
+                f1.1 ~~ 0*change1.1   # change6
+                f1.1 ~~ 0*change1.2
+                f2.1 ~~ 0*change1.1
+                f2.1 ~~ 0*change1.2
+                f3.1 ~~ 0*change1.1
+                f3.1 ~~ 0*change1.2
+                f4.1 ~~ 0*change1.1
+                f4.1 ~~ 0*change1.2
+                f5.1 ~~ 0*change1.1
+                f5.1 ~~ 0*change1.2
+                f6.1 ~~ 0.1*change1.1
+                f6.1 ~~ 0.1*change1.2
+                f7.1 ~~ 0*change1.1
+                f7.1 ~~ 0*change1.2
+
+                f1.1 ~~ 0*change1.1   # change7
+                f1.1 ~~ 0*change1.2
+                f2.1 ~~ 0*change1.1
+                f2.1 ~~ 0*change1.2
+                f3.1 ~~ 0*change1.1
+                f3.1 ~~ 0*change1.2
+                f4.1 ~~ 0*change1.1
+                f4.1 ~~ 0*change1.2
+                f5.1 ~~ 0*change1.1
+                f5.1 ~~ 0*change1.2
+                f6.1 ~~ 0*change1.1
+                f6.1 ~~ 0*change1.2
+                f7.1 ~~ 0.1*change1.1
+                f7.1 ~~ 0.1*change1.2
                 
-                f1.2 ~~ 0.6*f2.2   # T2
-                f1.2 ~~ 0.4*f3.2
-                f1.2 ~~ 0.2*f4.2
-                f1.2 ~~ 0.0*f5.2
-                f1.2 ~~ -0.2*f6.2
-                f1.2 ~~ -0.4*f7.2
-                f2.2 ~~ 0.6*f3.2
-                f2.2 ~~ 0.4*f4.2
-                f2.2 ~~ 0.2*f5.2
-                f2.2 ~~ 0*f6.2
-                f2.2 ~~ -0.2*f7.2
-                f3.2 ~~ 0.6*f4.2
-                f3.2 ~~ 0.4*f5.2
-                f3.2 ~~ 0.2*f6.2
-                f3.2 ~~ 0*f7.2
-                f4.2 ~~ 0.6*f5.2
-                f4.2 ~~ 0.4*f6.2
-                f4.2 ~~ 0.2*f7.2
-                f5.2 ~~ 0.6*f6.2
-                f5.2 ~~ 0.4*f7.2
-                f6.2 ~~ 0.6*f7.2
-                
-                f1.3 ~~ 0.6*f2.3    # T3
-                f1.3 ~~ 0.4*f3.3
-                f1.3 ~~ 0.2*f4.3
-                f1.3 ~~ 0.0*f5.3
-                f1.3 ~~ -0.2*f6.3
-                f1.3 ~~ -0.4*f7.3
-                f2.3 ~~ 0.6*f3.3
-                f2.3 ~~ 0.4*f4.3
-                f2.3 ~~ 0.2*f5.3
-                f2.3 ~~ 0*f6.3
-                f2.3 ~~ -0.2*f7.3
-                f3.3 ~~ 0.6*f4.3
-                f3.3 ~~ 0.4*f5.3
-                f3.3 ~~ 0.2*f6.3
-                f3.3 ~~ 0*f7.3
-                f4.3 ~~ 0.6*f5.3
-                f4.3 ~~ 0.4*f6.3
-                f4.3 ~~ 0.2*f7.3
-                f5.3 ~~ 0.6*f6.3
-                f5.3 ~~ 0.4*f7.3
-                f6.3 ~~ 0.6*f7.3
+                # f1.2 ~~ 0.6*f2.2   # factors T2 (don't correlate b/c endogenous variabels)
+                # f1.2 ~~ 0.4*f3.2
+                # f1.2 ~~ 0.2*f4.2
+                # f1.2 ~~ 0.0*f5.2
+                # f1.2 ~~ -0.2*f6.2
+                # f1.2 ~~ -0.4*f7.2
+                # f2.2 ~~ 0.6*f3.2
+                # f2.2 ~~ 0.4*f4.2
+                # f2.2 ~~ 0.2*f5.2
+                # f2.2 ~~ 0*f6.2
+                # f2.2 ~~ -0.2*f7.2
+                # f3.2 ~~ 0.6*f4.2
+                # f3.2 ~~ 0.4*f5.2
+                # f3.2 ~~ 0.2*f6.2
+                # f3.2 ~~ 0*f7.2
+                # f4.2 ~~ 0.6*f5.2
+                # f4.2 ~~ 0.4*f6.2
+                # f4.2 ~~ 0.2*f7.2
+                # f5.2 ~~ 0.6*f6.2
+                # f5.2 ~~ 0.4*f7.2
+                # f6.2 ~~ 0.6*f7.2
+                # 
+                # f1.3 ~~ 0.6*f2.3    # factors T3 (don't correlate b/c endogenous variabels)
+                # f1.3 ~~ 0.4*f3.3
+                # f1.3 ~~ 0.2*f4.3
+                # f1.3 ~~ 0.0*f5.3
+                # f1.3 ~~ -0.2*f6.3
+                # f1.3 ~~ -0.4*f7.3
+                # f2.3 ~~ 0.6*f3.3
+                # f2.3 ~~ 0.4*f4.3
+                # f2.3 ~~ 0.2*f5.3
+                # f2.3 ~~ 0*f6.3
+                # f2.3 ~~ -0.2*f7.3
+                # f3.3 ~~ 0.6*f4.3
+                # f3.3 ~~ 0.4*f5.3
+                # f3.3 ~~ 0.2*f6.3
+                # f3.3 ~~ 0*f7.3
+                # f4.3 ~~ 0.6*f5.3
+                # f4.3 ~~ 0.4*f6.3
+                # f4.3 ~~ 0.2*f7.3
+                # f5.3 ~~ 0.6*f6.3
+                # f5.3 ~~ 0.4*f7.3
+                # f6.3 ~~ 0.6*f7.3
                 
             # MEANS / INTERCEPTS
                 change1.1 ~ 0.1217353*1
@@ -1241,29 +1346,29 @@ PC9$nlevels[9]
   
   analyzeModel_7F_ch <- "
             # LATENT VARIABLES
-                f1.1 =~ lambda1_1*i1_1_1 + lambda1_2*i1_1_2 + lambda1_3*i1_1_3 + lambda1_4*i1_1_4 + lambda1_5*i1_1_5
-                f2.1 =~ lambda2_1*i2_1_1 + lambda2_2*i2_1_2 + lambda2_3*i2_1_3 + lambda2_4*i2_1_4 + lambda2_5*i2_1_5
-                f3.1 =~ lambda3_1*i3_1_1 + lambda3_2*i3_1_2 + lambda3_3*i3_1_3 + lambda3_4*i3_1_4 + lambda3_5*i3_1_5
-                f4.1 =~ lambda4_1*i4_1_1 + lambda4_2*i4_1_2 + lambda4_3*i4_1_3 + lambda4_4*i4_1_4 + lambda4_5*i4_1_5
-                f5.1 =~ lambda5_1*i5_1_1 + lambda5_2*i5_1_2 + lambda5_3*i5_1_3 + lambda5_4*i5_1_4 + lambda5_5*i5_1_5
-                f6.1 =~ lambda6_1*i6_1_1 + lambda6_2*i6_1_2 + lambda6_3*i6_1_3 + lambda6_4*i6_1_4 + lambda6_5*i6_1_5
-                f7.1 =~ lambda7_1*i7_1_1 + lambda7_2*i7_1_2 + lambda7_3*i7_1_3 + lambda7_4*i7_1_4 + lambda7_5*i7_1_5
+                f1.1 =~ lambda*i1_1_1 + lambda*i1_1_2 + lambda*i1_1_3 + lambda*i1_1_4 + lambda*i1_1_5
+                f2.1 =~ lambda*i2_1_1 + lambda*i2_1_2 + lambda*i2_1_3 + lambda*i2_1_4 + lambda*i2_1_5
+                f3.1 =~ lambda*i3_1_1 + lambda*i3_1_2 + lambda*i3_1_3 + lambda*i3_1_4 + lambda*i3_1_5
+                f4.1 =~ lambda*i4_1_1 + lambda*i4_1_2 + lambda*i4_1_3 + lambda*i4_1_4 + lambda*i4_1_5
+                f5.1 =~ lambda*i5_1_1 + lambda*i5_1_2 + lambda*i5_1_3 + lambda*i5_1_4 + lambda*i5_1_5
+                f6.1 =~ lambda*i6_1_1 + lambda*i6_1_2 + lambda*i6_1_3 + lambda*i6_1_4 + lambda*i6_1_5
+                f7.1 =~ lambda*i7_1_1 + lambda*i7_1_2 + lambda*i7_1_3 + lambda*i7_1_4 + lambda*i7_1_5
                 
-                f1.2 =~ lambda1_1*i1_2_1 + lambda1_2*i1_2_2 + lambda1_3*i1_2_3 + lambda1_4*i1_2_4 + lambda1_5*i1_2_5
-                f2.2 =~ lambda2_1*i2_2_1 + lambda2_2*i2_2_2 + lambda2_3*i2_2_3 + lambda2_4*i2_2_4 + lambda2_5*i2_2_5
-                f3.2 =~ lambda3_1*i3_2_1 + lambda3_2*i3_2_2 + lambda3_3*i3_2_3 + lambda3_4*i3_2_4 + lambda3_5*i3_2_5
-                f4.2 =~ lambda4_1*i4_2_1 + lambda4_2*i4_2_2 + lambda4_3*i4_2_3 + lambda4_4*i4_2_4 + lambda4_5*i4_2_5
-                f5.2 =~ lambda5_1*i5_2_1 + lambda5_2*i5_2_2 + lambda5_3*i5_2_3 + lambda5_4*i5_2_4 + lambda5_5*i5_2_5
-                f6.2 =~ lambda6_1*i6_2_1 + lambda6_2*i6_2_2 + lambda6_3*i6_2_3 + lambda6_4*i6_2_4 + lambda6_5*i6_2_5
-                f7.2 =~ lambda7_1*i7_2_1 + lambda7_2*i7_2_2 + lambda7_3*i7_2_3 + lambda7_4*i7_2_4 + lambda7_5*i7_2_5
+                f1.2 =~ lambda*i1_2_1 + lambda*i1_2_2 + lambda*i1_2_3 + lambda*i1_2_4 + lambda*i1_2_5
+                f2.2 =~ lambda*i2_2_1 + lambda*i2_2_2 + lambda*i2_2_3 + lambda*i2_2_4 + lambda*i2_2_5
+                f3.2 =~ lambda*i3_2_1 + lambda*i3_2_2 + lambda*i3_2_3 + lambda*i3_2_4 + lambda*i3_2_5
+                f4.2 =~ lambda*i4_2_1 + lambda*i4_2_2 + lambda*i4_2_3 + lambda*i4_2_4 + lambda*i4_2_5
+                f5.2 =~ lambda*i5_2_1 + lambda*i5_2_2 + lambda*i5_2_3 + lambda*i5_2_4 + lambda*i5_2_5
+                f6.2 =~ lambda*i6_2_1 + lambda*i6_2_2 + lambda*i6_2_3 + lambda*i6_2_4 + lambda*i6_2_5
+                f7.2 =~ lambda*i7_2_1 + lambda*i7_2_2 + lambda*i7_2_3 + lambda*i7_2_4 + lambda*i7_2_5
                 
-                f1.3 =~ lambda1_1*i1_3_1 + lambda1_2*i1_3_2 + lambda1_3*i1_3_3 + lambda1_4*i1_3_4 + lambda1_5*i1_3_5
-                f2.3 =~ lambda2_1*i2_3_1 + lambda2_2*i2_3_2 + lambda2_3*i2_3_3 + lambda2_4*i2_3_4 + lambda2_5*i2_3_5
-                f3.3 =~ lambda3_1*i3_3_1 + lambda3_2*i3_3_2 + lambda3_3*i3_3_3 + lambda3_4*i3_3_4 + lambda3_5*i3_3_5
-                f4.3 =~ lambda4_1*i4_3_1 + lambda4_2*i4_3_2 + lambda4_3*i4_3_3 + lambda4_4*i4_3_4 + lambda4_5*i4_3_5
-                f5.3 =~ lambda5_1*i5_3_1 + lambda5_2*i5_3_2 + lambda5_3*i5_3_3 + lambda5_4*i5_3_4 + lambda5_5*i5_3_5
-                f6.3 =~ lambda6_1*i6_3_1 + lambda6_2*i6_3_2 + lambda6_3*i6_3_3 + lambda6_4*i6_3_4 + lambda6_5*i6_3_5
-                f7.3 =~ lambda7_1*i7_3_1 + lambda7_2*i7_3_2 + lambda7_3*i7_3_3 + lambda7_4*i7_3_4 + lambda7_5*i7_3_5
+                f1.3 =~ lambda*i1_3_1 + lambda*i1_3_2 + lambda*i1_3_3 + lambda*i1_3_4 + lambda*i1_3_5
+                f2.3 =~ lambda*i2_3_1 + lambda*i2_3_2 + lambda*i2_3_3 + lambda*i2_3_4 + lambda*i2_3_5
+                f3.3 =~ lambda*i3_3_1 + lambda*i3_3_2 + lambda*i3_3_3 + lambda*i3_3_4 + lambda*i3_3_5
+                f4.3 =~ lambda*i4_3_1 + lambda*i4_3_2 + lambda*i4_3_3 + lambda*i4_3_4 + lambda*i4_3_5
+                f5.3 =~ lambda*i5_3_1 + lambda*i5_3_2 + lambda*i5_3_3 + lambda*i5_3_4 + lambda*i5_3_5
+                f6.3 =~ lambda*i6_3_1 + lambda*i6_3_2 + lambda*i6_3_3 + lambda*i6_3_4 + lambda*i6_3_5
+                f7.3 =~ lambda*i7_3_1 + lambda*i7_3_2 + lambda*i7_3_3 + lambda*i7_3_4 + lambda*i7_3_5
                 
                 change1.1 =~ 1*f1.2 + 1*f1.3
                 change1.2 =~ 1*f1.3
@@ -1306,62 +1411,209 @@ PC9$nlevels[9]
             # REGRESSION PATHS
                 f1.2 ~ 1*f1.1
                 f1.3 ~ 1*f1.1
-                f1.3 ~ 1*f1.2
-                
+
                 f2.2 ~ 1*f2.1
                 f2.3 ~ 1*f2.1
-                f2.3 ~ 1*f2.2
-                
+
                 f3.2 ~ 1*f3.1
                 f3.3 ~ 1*f3.1
-                f3.3 ~ 1*f3.2
-                
+
                 f4.2 ~ 1*f4.1
                 f4.3 ~ 1*f4.1
-                f4.3 ~ 1*f4.2
-                
+
                 f5.2 ~ 1*f5.1
                 f5.3 ~ 1*f5.1
-                f5.3 ~ 1*f5.2
-                
+
                 f6.2 ~ 1*f6.1
                 f6.3 ~ 1*f6.1
-                f6.3 ~ 1*f6.2
-                
+
                 f7.2 ~ 1*f7.1
                 f7.3 ~ 1*f7.1
-                f7.3 ~ 1*f7.2
       "
   
   # making a loop to identify sample size for 80% power with effect from Bilwiss
   Output_7F_ch <- data.frame()
   
-  for(participants in seq(from = 150, to = 950, by = 20)) {
+  for(participants in seq(from = 440, to = 600, by = 20)) {
     
     Output_tmp <- sim(nRep = 500, 
                       model = analyzeModel_7F_ch, 
                       n = participants, 
                       generate = popModel_7F_ch, 
-                      lavaanfun = "change", 
+                      lavaanfun = "growth",
                       std.lv = T, 
                       seed = 123)
     
-    Output_7F_reg[(participants-130)/20, "samplesize"] <- participants
-    Output_7F_reg[(participants-130)/20, "f1"] <- summaryParam(Output_tmp)[36, 4] # power semester on f1
-    Output_7F_reg[(participants-130)/20, "f2"] <- summaryParam(Output_tmp)[37, 4] # power semester on f2
-    Output_7F_reg[(participants-130)/20, "f3"] <- summaryParam(Output_tmp)[38, 4] # power semester on f3
-    Output_7F_reg[(participants-130)/20, "f4"] <- summaryParam(Output_tmp)[39, 4] # power semester on f4
-    Output_7F_reg[(participants-130)/20, "f5"] <- summaryParam(Output_tmp)[40, 4] # power semester on f5
-    Output_7F_reg[(participants-130)/20, "f6"] <- summaryParam(Output_tmp)[41, 4] # power semester on f6
-    Output_7F_reg[(participants-130)/20, "f7"] <- summaryParam(Output_tmp)[42, 4] # power semester on f7
-    Output_7F_reg[(participants-130)/20, "rmsea"] <- getCutoff(Output_tmp, 0.05)[4]
-    Output_7F_reg[(participants-130)/20, "cfi"] <- getCutoff(Output_tmp, 0.05)[5]
-    Output_7F_reg[(participants-130)/20, "tli"] <- getCutoff(Output_tmp, 0.05)[6]
-    Output_7F_reg[(participants-130)/20, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
+    Output_7F_ch[(participants-420)/20, "samplesize"] <- participants
+    Output_7F_ch[(participants-420)/20, "change1.1"] <- summaryParam(Output_tmp)[442, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change1.2"] <- summaryParam(Output_tmp)[443, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change2.1"] <- summaryParam(Output_tmp)[444, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change2.2"] <- summaryParam(Output_tmp)[445, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change3.1"] <- summaryParam(Output_tmp)[446, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change3.2"] <- summaryParam(Output_tmp)[447, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change4.1"] <- summaryParam(Output_tmp)[448, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change4.2"] <- summaryParam(Output_tmp)[449, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change5.1"] <- summaryParam(Output_tmp)[450, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change5.2"] <- summaryParam(Output_tmp)[451, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change6.1"] <- summaryParam(Output_tmp)[452, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change6.2"] <- summaryParam(Output_tmp)[453, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change7.1"] <- summaryParam(Output_tmp)[454, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "change7.2"] <- summaryParam(Output_tmp)[455, 4] # power of mean of change var
+    Output_7F_ch[(participants-420)/20, "rmsea"] <- getCutoff(Output_tmp, 0.05)[4]
+    Output_7F_ch[(participants-420)/20, "cfi"] <- getCutoff(Output_tmp, 0.05)[5]
+    Output_7F_ch[(participants-420)/20, "tli"] <- getCutoff(Output_tmp, 0.05)[6]
+    Output_7F_ch[(participants-420)/20, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
   }
   
-  View(Output_7F_reg)
+  View(Output_7F_ch)
 
+  
+# └ latent (neighbour) change model (on one theory practice model) ####
+  popModel_7F_ch1 <- "
+  # LATENT VARIABLES
+    f1.1 =~ 0.654*i1_1_1 + 0.654*i1_1_2 + 0.654*i1_1_3 + 0.654*i1_1_4 + 0.654*i1_1_5
+    f1.2 =~ 0.654*i1_2_1 + 0.654*i1_2_2 + 0.654*i1_2_3 + 0.654*i1_2_4 + 0.654*i1_2_5
+    f1.3 =~ 0.654*i1_3_1 + 0.654*i1_3_2 + 0.654*i1_3_3 + 0.654*i1_3_4 + 0.654*i1_3_5
+    
+    change1.1 =~ 1*f1.2 + 1*f1.3
+    change1.2 =~ 1*f1.3
+  
+
+  # VARIANCES
+    f1.1 ~~ 1*f1.1
+    # f1.2 ~~ 0*f1.2
+    # f1.3 ~~ 0*f1.3
+
+    change1.1 ~~ 0.2*change1.1
+    change1.2 ~~ 0.2*change1.2
+
+    i1_1_1 ~~ 1*i1_1_1   # T1
+    i1_1_2 ~~ 1*i1_1_2
+    i1_1_3 ~~ 1*i1_1_3
+    i1_1_4 ~~ 1*i1_1_4
+    i1_1_5 ~~ 1*i1_1_5
+    
+    i1_2_1 ~~ 1*i1_2_1   # T2
+    i1_2_2 ~~ 1*i1_2_2
+    i1_2_3 ~~ 1*i1_2_3
+    i1_2_4 ~~ 1*i1_2_4
+    i1_2_5 ~~ 1*i1_2_5
+    
+    i1_3_1 ~~ 1*i1_3_1   # T3
+    i1_3_2 ~~ 1*i1_3_2
+    i1_3_3 ~~ 1*i1_3_3
+    i1_3_4 ~~ 1*i1_3_4
+    i1_3_5 ~~ 1*i1_3_5
+    
+
+  # FACTOR CORRELATIONS
+    f1.1 ~~ 0.1*change1.1
+    f1.1 ~~ 0.1*change1.2
+    f1.2 ~~ 0.1*change1.2
+    change1.1 ~~ -0.1*change1.2   # DOES THIS MAKE SENSE?
+
+
+  # MEANS / INTERCEPTS
+    change1.1 ~ 0.1217353*1
+    change1.2 ~ 0.1217353*1
+
+    # i1_1_1 ~ 0*1
+    # i1_1_2 ~ 0*1
+    # i1_1_3 ~ 0*1
+    # i1_1_4 ~ 0*1
+    # i1_1_5 ~ 0*1
+    # i1_2_1 ~ 0*1
+    # i1_2_2 ~ 0*1
+    # i1_2_3 ~ 0*1
+    # i1_2_4 ~ 0*1
+    # i1_2_5 ~ 0*1
+    # i1_3_1 ~ 0*1
+    # i1_3_2 ~ 0*1
+    # i1_3_3 ~ 0*1
+    # i1_3_4 ~ 0*1
+    # i1_3_5 ~ 0*1
+
+  
+  # REGRESSION PATHS
+    f1.2 ~ 1*f1.1
+    f1.3 ~ 1*f1.1
+  "
+  
+  analyzeModel_7F_ch1 <- "
+    # LATENT VARIABLES
+      f1.1 =~ lambda*i1_1_1 + lambda*i1_1_2 + lambda*i1_1_3 + lambda*i1_1_4 + lambda*i1_1_5
+      f1.2 =~ lambda*i1_2_1 + lambda*i1_2_2 + lambda*i1_2_3 + lambda*i1_2_4 + lambda*i1_2_5
+      f1.3 =~ lambda*i1_3_1 + lambda*i1_3_2 + lambda*i1_3_3 + lambda*i1_3_4 + lambda*i1_3_5
+    
+      change1.1 =~ 1*f1.2 + 1*f1.3
+      change1.2 =~ 1*f1.3
+    
+    # MEANS / INTERCEPTS
+        # i1_1_1 ~ xi*1
+        # i1_1_2 ~ xi*1
+        # i1_1_3 ~ xi*1
+        # i1_1_4 ~ xi*1
+        # i1_1_5 ~ xi*1
+        # i1_2_1 ~ xi*1
+        # i1_2_2 ~ xi*1
+        # i1_2_3 ~ xi*1
+        # i1_2_4 ~ xi*1
+        # i1_2_5 ~ xi*1
+        # i1_3_1 ~ xi*1
+        # i1_3_2 ~ xi*1
+        # i1_3_3 ~ xi*1
+        # i1_3_4 ~ xi*1
+        # i1_3_5 ~ xi*1
+
+  # FACTOR CORRELATIONS
+        change1.2 ~~ f1.2
+        change1.1 ~~ change1.2
+    
+    # VARIANCES
+      # f1.1 ~~ 1*f1.1
+      f1.2 ~~ 0*f1.2
+      f1.3 ~~ 0*f1.3
+    
+    # REGRESSION PATHS
+      f1.2 ~ 1*f1.1
+      f1.3 ~ 1*f1.1
+    "
+  
+  # making a loop to identify sample size for 80% power with effect from Bilwiss
+  Output_7F_ch1 <- data.frame()
+  
+  for(participants in seq(from = 440, to = 540, by = 20)) {
+      
+      Output_tmp <- sim(nRep = 500, 
+                        model = analyzeModel_7F_ch1, 
+                        n = participants, 
+                        generate = popModel_7F_ch1, 
+                        lavaanfun = "growth", 
+                        std.lv = T, 
+                        seed = 123)
+      
+      Output_7F_ch1[(participants-420)/20, "samplesize"] <- participants
+      Output_7F_ch1[(participants-420)/20, "change1.1"] <- summaryParam(Output_tmp)[442, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change1.2"] <- summaryParam(Output_tmp)[443, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change2.1"] <- summaryParam(Output_tmp)[444, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change2.2"] <- summaryParam(Output_tmp)[445, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change3.1"] <- summaryParam(Output_tmp)[446, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change3.2"] <- summaryParam(Output_tmp)[447, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change4.1"] <- summaryParam(Output_tmp)[448, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change4.2"] <- summaryParam(Output_tmp)[449, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change5.1"] <- summaryParam(Output_tmp)[450, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change5.2"] <- summaryParam(Output_tmp)[451, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change6.1"] <- summaryParam(Output_tmp)[452, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change6.2"] <- summaryParam(Output_tmp)[453, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change7.1"] <- summaryParam(Output_tmp)[454, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "change7.2"] <- summaryParam(Output_tmp)[455, 4] # power of mean of change var
+      Output_7F_ch1[(participants-420)/20, "rmsea"] <- getCutoff(Output_tmp, 0.05)[4]
+      Output_7F_ch1[(participants-420)/20, "cfi"] <- getCutoff(Output_tmp, 0.05)[5]
+      Output_7F_ch1[(participants-420)/20, "tli"] <- getCutoff(Output_tmp, 0.05)[6]
+      Output_7F_ch1[(participants-420)/20, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
+  }
+  
+  View(Output_7F_ch1)
 
 
 ## └ mixed effects model (varying intercept) ####
@@ -1430,8 +1682,8 @@ pwr.f2.test(u = 4,    # p-1 (predictors -1): treatment, 2*beliefs, 2*interaction
             sig.level = .05,
             power = .80
 )
-
-
+ 
+  
 # how many participants do we need for a power of .95?
 pwr.f2.test(u = 4,    # p-1 (predictors -1): treatment, 2*beliefs, 2*interactions
             f2 = .15,  #f²= {.02 (small); .15 (medium); .35 (large)} (Cohen, 1988)
