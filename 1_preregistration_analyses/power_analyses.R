@@ -413,28 +413,28 @@ library(effsize)
     # making a loop to identify sample size for 80% power with effect from Bilwiss
     Output_7F_reg <- data.frame()
     
-    for(participants in seq(from = 480, to = 780, by = 10)) {   # ca. 530 überarbeiten
+    for(participants in seq(from = 600, to = 780, by = 10)) {
       
-      Output_tmp <- sim(nRep = 500, 
+      Output_tmp <- sim(nRep = 1000, 
                         model = analyzeModel_7F_reg, 
                         n = participants, 
                         generate = popModel_7F_reg, 
                         lavaanfun = "sem", 
                         std.lv = T, 
-                        seed = 123)
+                        seed = 321)
       
-      Output_7F_reg[(participants-470)/10, "samplesize"] <- participants
-      Output_7F_reg[(participants-470)/10, "f1"] <- summaryParam(Output_tmp)[36, 4] # power semester on f1
-      Output_7F_reg[(participants-470)/10, "f2"] <- summaryParam(Output_tmp)[37, 4] # power semester on f2
-      Output_7F_reg[(participants-470)/10, "f3"] <- summaryParam(Output_tmp)[38, 4] # power semester on f3
-      Output_7F_reg[(participants-470)/10, "f4"] <- summaryParam(Output_tmp)[39, 4] # power semester on f4
-      Output_7F_reg[(participants-470)/10, "f5"] <- summaryParam(Output_tmp)[40, 4] # power semester on f5
-      Output_7F_reg[(participants-470)/10, "f6"] <- summaryParam(Output_tmp)[41, 4] # power semester on f6
-      Output_7F_reg[(participants-470)/10, "f7"] <- summaryParam(Output_tmp)[42, 4] # power semester on f7
-      Output_7F_reg[(participants-470)/10, "rmsea"] <- getCutoff(Output_tmp, 0.05)[4]
-      Output_7F_reg[(participants-470)/10, "cfi"] <- getCutoff(Output_tmp, 0.05)[5]
-      Output_7F_reg[(participants-470)/10, "tli"] <- getCutoff(Output_tmp, 0.05)[6]
-      Output_7F_reg[(participants-470)/10, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
+      Output_7F_reg[(participants-590)/10, "samplesize"] <- participants
+      Output_7F_reg[(participants-590)/10, "f1"] <- summaryParam(Output_tmp)[36, 4] # power semester on f1
+      Output_7F_reg[(participants-590)/10, "f2"] <- summaryParam(Output_tmp)[37, 4] # power semester on f2
+      Output_7F_reg[(participants-590)/10, "f3"] <- summaryParam(Output_tmp)[38, 4] # power semester on f3
+      Output_7F_reg[(participants-590)/10, "f4"] <- summaryParam(Output_tmp)[39, 4] # power semester on f4
+      Output_7F_reg[(participants-590)/10, "f5"] <- summaryParam(Output_tmp)[40, 4] # power semester on f5
+      Output_7F_reg[(participants-590)/10, "f6"] <- summaryParam(Output_tmp)[41, 4] # power semester on f6
+      Output_7F_reg[(participants-590)/10, "f7"] <- summaryParam(Output_tmp)[42, 4] # power semester on f7
+      Output_7F_reg[(participants-590)/10, "rmsea"] <- getCutoff(Output_tmp, 0.05)[4]
+      Output_7F_reg[(participants-590)/10, "cfi"] <- getCutoff(Output_tmp, 0.05)[5]
+      Output_7F_reg[(participants-590)/10, "tli"] <- getCutoff(Output_tmp, 0.05)[6]
+      Output_7F_reg[(participants-590)/10, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
     }
     
     View(Output_7F_reg)
@@ -1476,8 +1476,8 @@ PC9$nlevels[9]
     # f1.2 ~~ 0*f1.2
     # f1.3 ~~ 0*f1.3
 
-    change1.1 ~~ 0.2*change1.1
-    change1.2 ~~ 0.2*change1.2
+    change1.1 ~~ 1*change1.1
+    change1.2 ~~ 1*change1.2
 
     i1_1_1 ~~ 1*i1_1_1   # T1
     i1_1_2 ~~ 1*i1_1_2
@@ -1499,34 +1499,17 @@ PC9$nlevels[9]
     
 
   # FACTOR CORRELATIONS
-    f1.1 ~~ -0.25*change1.1
-    f1.1 ~~ -0.4*change1.2
+    f1.1 ~~ -0.37*change1.1
+    f1.1 ~~ -0.18*change1.2
     # f1.2 ~~ 0*change1.2
     # f1.2 ~~ 0*f1.3
-    change1.1 ~~ 0.1*change1.2  
+    change1.1 ~~ -0.27*change1.2
 
 
   # MEANS / INTERCEPTS
-    change1.1 ~ 0.1217353*1
-    change1.2 ~ 0.1217353*1
+    change1.1 ~ -0.1217353*1 # 0.1217353
+    change1.2 ~ 0.01217353*1
 
-    # i1_1_1 ~ 0*1
-    # i1_1_2 ~ 0*1
-    # i1_1_3 ~ 0*1
-    # i1_1_4 ~ 0*1
-    # i1_1_5 ~ 0*1
-    # i1_2_1 ~ 0*1
-    # i1_2_2 ~ 0*1
-    # i1_2_3 ~ 0*1
-    # i1_2_4 ~ 0*1
-    # i1_2_5 ~ 0*1
-    # i1_3_1 ~ 0*1
-    # i1_3_2 ~ 0*1
-    # i1_3_3 ~ 0*1
-    # i1_3_4 ~ 0*1
-    # i1_3_5 ~ 0*1
-
-  
   # REGRESSION PATHS
     f1.2 ~ 1*f1.1
     f1.3 ~ 1*f1.1
@@ -1559,10 +1542,10 @@ PC9$nlevels[9]
         # i1_3_5 ~ xi*1
 
   # FACTOR CORRELATIONS
-        change1.2 ~~ f1.2
+        change1.2 ~~ 0*f1.2   # möglicherweise auf 0 setzen
         change1.1 ~~ change1.2
     
-    # VARIANCES
+    # (RESIDUAL) VARIANCES
       f1.2 ~~ 0*f1.2
       f1.3 ~~ 0*f1.3
     
