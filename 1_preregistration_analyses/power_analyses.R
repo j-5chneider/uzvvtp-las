@@ -310,14 +310,6 @@ library(effsize)
               f7 =~ 0.654*i7_1 + 0.654*i7_2 + 0.654*i7_3 + 0.654*i7_4 + 0.654*i7_5
 
           # VARIANCES
-              f1 ~~ 1*f1
-              f2 ~~ 1*f2
-              f3 ~~ 1*f3
-              f4 ~~ 1*f4
-              f5 ~~ 1*f5
-              f6 ~~ 1*f6
-              f7 ~~ 1*f7
-
               i1_1 ~~ 0.573*i1_1
               i1_2 ~~ 0.573*i1_2
               i1_3 ~~ 0.573*i1_3
@@ -421,7 +413,7 @@ library(effsize)
     # making a loop to identify sample size for 80% power with effect from Bilwiss
     Output_7F_reg <- data.frame()
     
-    for(participants in seq(from = 150, to = 950, by = 20)) {
+    for(participants in seq(from = 480, to = 780, by = 10)) {   # ca. 530 überarbeiten
       
       Output_tmp <- sim(nRep = 500, 
                         model = analyzeModel_7F_reg, 
@@ -431,18 +423,18 @@ library(effsize)
                         std.lv = T, 
                         seed = 123)
       
-      Output_7F_reg[(participants-130)/20, "samplesize"] <- participants
-      Output_7F_reg[(participants-130)/20, "f1"] <- summaryParam(Output_tmp)[36, 4] # power semester on f1
-      Output_7F_reg[(participants-130)/20, "f2"] <- summaryParam(Output_tmp)[37, 4] # power semester on f2
-      Output_7F_reg[(participants-130)/20, "f3"] <- summaryParam(Output_tmp)[38, 4] # power semester on f3
-      Output_7F_reg[(participants-130)/20, "f4"] <- summaryParam(Output_tmp)[39, 4] # power semester on f4
-      Output_7F_reg[(participants-130)/20, "f5"] <- summaryParam(Output_tmp)[40, 4] # power semester on f5
-      Output_7F_reg[(participants-130)/20, "f6"] <- summaryParam(Output_tmp)[41, 4] # power semester on f6
-      Output_7F_reg[(participants-130)/20, "f7"] <- summaryParam(Output_tmp)[42, 4] # power semester on f7
-      Output_7F_reg[(participants-130)/20, "rmsea"] <- getCutoff(Output_tmp, 0.05)[4]
-      Output_7F_reg[(participants-130)/20, "cfi"] <- getCutoff(Output_tmp, 0.05)[5]
-      Output_7F_reg[(participants-130)/20, "tli"] <- getCutoff(Output_tmp, 0.05)[6]
-      Output_7F_reg[(participants-130)/20, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
+      Output_7F_reg[(participants-470)/10, "samplesize"] <- participants
+      Output_7F_reg[(participants-470)/10, "f1"] <- summaryParam(Output_tmp)[36, 4] # power semester on f1
+      Output_7F_reg[(participants-470)/10, "f2"] <- summaryParam(Output_tmp)[37, 4] # power semester on f2
+      Output_7F_reg[(participants-470)/10, "f3"] <- summaryParam(Output_tmp)[38, 4] # power semester on f3
+      Output_7F_reg[(participants-470)/10, "f4"] <- summaryParam(Output_tmp)[39, 4] # power semester on f4
+      Output_7F_reg[(participants-470)/10, "f5"] <- summaryParam(Output_tmp)[40, 4] # power semester on f5
+      Output_7F_reg[(participants-470)/10, "f6"] <- summaryParam(Output_tmp)[41, 4] # power semester on f6
+      Output_7F_reg[(participants-470)/10, "f7"] <- summaryParam(Output_tmp)[42, 4] # power semester on f7
+      Output_7F_reg[(participants-470)/10, "rmsea"] <- getCutoff(Output_tmp, 0.05)[4]
+      Output_7F_reg[(participants-470)/10, "cfi"] <- getCutoff(Output_tmp, 0.05)[5]
+      Output_7F_reg[(participants-470)/10, "tli"] <- getCutoff(Output_tmp, 0.05)[6]
+      Output_7F_reg[(participants-470)/10, "srmr"] <- getCutoff(Output_tmp, 0.05)[7]
     }
     
     View(Output_7F_reg)
@@ -1507,10 +1499,11 @@ PC9$nlevels[9]
     
 
   # FACTOR CORRELATIONS
-    f1.1 ~~ 0.1*change1.1
-    f1.1 ~~ 0.1*change1.2
-    f1.2 ~~ 0.1*change1.2
-    change1.1 ~~ -0.1*change1.2   # DOES THIS MAKE SENSE?
+    f1.1 ~~ -0.25*change1.1
+    f1.1 ~~ -0.4*change1.2
+    # f1.2 ~~ 0*change1.2
+    # f1.2 ~~ 0*f1.3
+    change1.1 ~~ 0.1*change1.2  
 
 
   # MEANS / INTERCEPTS
@@ -1570,7 +1563,6 @@ PC9$nlevels[9]
         change1.1 ~~ change1.2
     
     # VARIANCES
-      # f1.1 ~~ 1*f1.1
       f1.2 ~~ 0*f1.2
       f1.3 ~~ 0*f1.3
     
@@ -1676,8 +1668,8 @@ PC9$nlevels[9]
 
 ## Studie 3 ####################################################################
 # how many participants do we need for a power of .80?
-pwr.f2.test(u = 4,    # p-1 (predictors -1): treatment, 2*beliefs, 2*interactions
-            f2 = .15,  #f²= {.02 (small); .15 (medium); .35 (large)} (Cohen, 1988)
+pwr.f2.test(u = 4,    # p-1 (predictors -1): treatment, 2*beliefs, 2*interactions     # überarbeiten: warum 4 Prädiktoren, effectstärke zw. klein und mittel
+            f2 = .02,  #f²= {.02 (small); .15 (medium); .35 (large)} (Cohen, 1988)
             # v = 345,  # n-p
             sig.level = .05,
             power = .80
