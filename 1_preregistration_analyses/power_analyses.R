@@ -18,7 +18,7 @@ library(effsize)
     ## how high can we expect the loadings to be?
       # because we do not have pilot data, we get approximate estimates
       # from BilWiss data and its scale on beliefs of theory-practice relation
-      BilWiss <- read_sav("../data/BilWiss_Laengsschnitt_MZP1234_SUF_1809-24a.sav") #we can't share this data as is is scientific usefile from another study
+      BilWiss <- read_sav("../../3_Instrumente/BilWiss/BilWiss MZP 1-4/BilWiss_Laengsschnitt_MZP1234_SUF_1809-24a.sav") #we can't share this data as is is scientific usefile from another study
       
       # we use the second measurement point because there is data available from both cohorts
       cfa_loadings_model <- "lv =~ tp01_3 + tp02r_3 + tp03_3 + tp04_3 + tp05_3 + tp06_3"
@@ -448,10 +448,7 @@ library(effsize)
       #> 750          0.856  0.862  0.862  0.840  0.838  0.842  0.852  0.01250722 0.9916610 0.9907345 0.02847058
       #> 770          0.858  0.850  0.844  0.854  0.862  0.836  0.844  0.01242964 0.9919912 0.9911013 0.02827026
 
-    
-    
 
-    
     
   # └ SEM model 2 ####
     # with
@@ -1517,29 +1514,29 @@ PC9$nlevels[9]
   
   analyzeModel_7F_ch1 <- "
     # LATENT VARIABLES
-      f1.1 =~ lambda*i1_1_1 + lambda*i1_1_2 + lambda*i1_1_3 + lambda*i1_1_4 + lambda*i1_1_5
-      f1.2 =~ lambda*i1_2_1 + lambda*i1_2_2 + lambda*i1_2_3 + lambda*i1_2_4 + lambda*i1_2_5
-      f1.3 =~ lambda*i1_3_1 + lambda*i1_3_2 + lambda*i1_3_3 + lambda*i1_3_4 + lambda*i1_3_5
+      f1.1 =~ lambda1*i1_1_1 + lambda2*i1_1_2 + lambda3*i1_1_3 + lambda4*i1_1_4 + lambda5*i1_1_5
+      f1.2 =~ lambda1*i1_2_1 + lambda2*i1_2_2 + lambda3*i1_2_3 + lambda4*i1_2_4 + lambda5*i1_2_5
+      f1.3 =~ lambda1*i1_3_1 + lambda2*i1_3_2 + lambda3*i1_3_3 + lambda4*i1_3_4 + lambda5*i1_3_5
     
       change1.1 =~ 1*f1.2 + 1*f1.3
       change1.2 =~ 1*f1.3
     
     # MEANS / INTERCEPTS
-        # i1_1_1 ~ xi*1
-        # i1_1_2 ~ xi*1
-        # i1_1_3 ~ xi*1
-        # i1_1_4 ~ xi*1
-        # i1_1_5 ~ xi*1
-        # i1_2_1 ~ xi*1
-        # i1_2_2 ~ xi*1
-        # i1_2_3 ~ xi*1
-        # i1_2_4 ~ xi*1
-        # i1_2_5 ~ xi*1
-        # i1_3_1 ~ xi*1
-        # i1_3_2 ~ xi*1
-        # i1_3_3 ~ xi*1
-        # i1_3_4 ~ xi*1
-        # i1_3_5 ~ xi*1
+        i1_1_1 ~ xi1*1
+        i1_1_2 ~ xi2*1
+        i1_1_3 ~ xi3*1
+        i1_1_4 ~ xi4*1
+        i1_1_5 ~ xi5*1
+        i1_2_1 ~ xi1*1
+        i1_2_2 ~ xi2*1
+        i1_2_3 ~ xi3*1
+        i1_2_4 ~ xi4*1
+        i1_2_5 ~ xi5*1
+        i1_3_1 ~ xi1*1
+        i1_3_2 ~ xi2*1
+        i1_3_3 ~ xi3*1
+        i1_3_4 ~ xi4*1
+        i1_3_5 ~ xi5*1
 
   # FACTOR CORRELATIONS
         change1.2 ~~ 0*f1.2   # möglicherweise auf 0 setzen
@@ -1589,6 +1586,126 @@ PC9$nlevels[9]
   }
   
   View(Output_7F_ch1)
+  
+  
+
+#################################
+## Bilwiss Berechnungen
+#################################
+
+model <- "
+state1 =~ lamb1*tp01_2 + lamb2*tp02r_2 + lamb3*tp03_2 + lamb4*tp04_2 + lamb5*tp05_2 + lamb6*tp06_2
+state2 =~ lamb1*tp01_3 + lamb2*tp02r_3 + lamb3*tp03_3 + lamb4*tp04_3 + lamb5*tp05_3 + lamb6*tp06_3
+state3 =~ lamb1*tp01_4 + lamb2*tp02r_4 + lamb3*tp03_4 + lamb4*tp04_4 + lamb5*tp05_4 + lamb6*tp06_4
+
+diff2_1 =~ 1*state2 + 1*state3
+diff3_2 =~ 1*state3
+
+state2 ~ 1*state1
+state3 ~ 1*state1
+
+state2 ~~ 0*state3
+state2 ~~ 0*diff3_2
+state3 ~~ 0*diff2_1
+diff2_1 ~~ state1
+diff3_2 ~~ state1
+diff3_2 ~~ diff2_1
+"
+
+fit <- growth(model = model, data = BilWiss, std.lv=T)
+
+
+
+##################### what i do now
+popmodel_tmp <- "
+  state1 =~ 0.654*d11 + 0.654*d21 + 0.654*d31 + 0.654*d41 + 0.654*d51
+  state2 =~ 0.654*d12 + 0.654*d22 + 0.654*d32 + 0.654*d42 + 0.654*d52
+  state3 =~ 0.654*d13 + 0.654*d23 + 0.654*d33 + 0.654*d43 + 0.654*d53
+
+  # state2 ~ 1*state1 + 1*diff2_1
+  # state3 ~ 1*state1 + 1*diff2_1 + 1*diff3_2
+
+  diff2_1 =~ 1*state2 + 1*state3
+  diff3_2 =~ 1*state3
+
+  state2 ~ 1*state1
+  state3 ~ 1*state1
+
+  # covariance
+  state2 ~~ 0*state3
+  state2 ~~ 0*diff3_2
+  state3 ~~ 0*diff2_1
+
+  diff2_1 ~~ -0.1*state1   # abgeleitet aus BilWis-Modell
+  diff3_2 ~~ -0.13*state1
+  diff3_2 ~~ -0.8*diff2_1
+
+  # means
+  state1 ~ 1*1
+  diff2_1 ~ -0.1217353*1
+  diff3_2 ~ 0.1217353*1
+  
+  # variances
+  state1 ~~ 1*state1
+  diff2_1 ~~ 1*diff2_1
+  diff3_2 ~~ 1*diff3_2
+
+  # residual variance
+  d11 ~~ 0.573*d11
+  d21 ~~ 0.573*d21
+  d31 ~~ 0.573*d31
+  d41 ~~ 0.573*d41
+  d51 ~~ 0.573*d51
+  d12 ~~ 0.573*d12
+  d22 ~~ 0.573*d22
+  d32 ~~ 0.573*d32
+  d42 ~~ 0.573*d42
+  d52 ~~ 0.573*d52
+  d13 ~~ 0.573*d13
+  d23 ~~ 0.573*d23
+  d33 ~~ 0.573*d33
+  d43 ~~ 0.573*d43
+  d53 ~~ 0.573*d53
+  state2 ~~ 0*state2
+  state3 ~~ 0*state3
+"
+
+  analyzemodel_tmp <- "
+  state1 =~ lamb1*d11 + lamb2*d21 + lamb3*d31 + lamb4*d41 + lamb5*d51
+  state2 =~ lamb1*d12 + lamb2*d22 + lamb3*d32 + lamb4*d42 + lamb5*d52
+  state3 =~ lamb1*d13 + lamb2*d23 + lamb3*d33 + lamb4*d43 + lamb5*d53
+
+  # diff2_1 =~ 0*d11
+  # diff3_2 =~ 0*d11
+
+  # state2 ~ 1*state1 + 1*diff2_1
+  # state3 ~ 1*state1 + 1*diff2_1 + 1*diff3_2
+  
+  diff2_1 =~ 1*state2 + 1*state3
+  diff3_2 =~ 1*state3
+
+  state2 ~ 1*state1
+  state3 ~ 1*state1
+
+  state2 ~~ 0*state3
+  state2 ~~ 0*diff3_2
+
+  state3 ~~ 0*diff2_1
+
+  diff2_1 ~~ state1
+
+  diff3_2 ~~ state1
+  diff3_2 ~~ diff2_1
+"
+
+
+  Out_tmp <- sim(nRep = 100,
+                    model = analyzemodel_tmp,
+                    n = 400,
+                    generate = popmodel_tmp,
+                    lavaanfun = "growth",
+                    # std.lv = T,
+                    seed = 123)
 
 
 ## └ mixed effects model (varying intercept) ####
