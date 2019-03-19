@@ -390,7 +390,7 @@ library(effsize)
         diff2_1 =~ 0*d11
         diff3_2 =~ 0*d11
         
-        state2 ~ 1*state1 + 1*dif2_1
+        state2 ~ 1*state1 + 1*diff2_1
         state2 ~~ 0*state2
         
         state3 ~ 1*state1 + 1*diff2_1 + 1*diff3_2
@@ -422,23 +422,29 @@ library(effsize)
         d43 ~ 0*1
         d53 ~ 0*1
         
-        d11 ~~ 0.272*d11
-        d21 ~~ 0.272*d21
-        d31 ~~ 0.272*d31
-        d41 ~~ 0.272*d41
-        d51 ~~ 0.272*d51
-        d12 ~~ 0.272*d12
-        d22 ~~ 0.272*d22
-        d32 ~~ 0.272*d32
-        d42 ~~ 0.272*d42
-        d52 ~~ 0.272*d52
-        d13 ~~ 0.272*d13
-        d23 ~~ 0.272*d23
-        d33 ~~ 0.272*d33
-        d43 ~~ 0.272*d43
-        d53 ~~ 0.272*d53
+        state1 ~ 2.8*1
+        state2 ~ -0.019*1
+        state3 ~ -0.063*1
+        diff2_1 ~ -0.082*1
+        diff3_2 ~ -0.063*1
         
-        state1 ~~ 0.25*state1
+        d11 ~~ 0.381*d11
+        d21 ~~ 0.381*d21
+        d31 ~~ 0.381*d31
+        d41 ~~ 0.381*d41
+        d51 ~~ 0.381*d51
+        d12 ~~ 0.381*d12
+        d22 ~~ 0.381*d22
+        d32 ~~ 0.381*d32
+        d42 ~~ 0.381*d42
+        d52 ~~ 0.381*d52
+        d13 ~~ 0.381*d13
+        d23 ~~ 0.381*d23
+        d33 ~~ 0.381*d33
+        d43 ~~ 0.381*d43
+        d53 ~~ 0.381*d53
+        
+        state1 ~~ 0.205*state1
         diff2_1 ~~ 0.087*diff2_1
         diff3_2 ~~ 0.119*diff3_2
         "
@@ -447,11 +453,14 @@ library(effsize)
         state2 =~ lamb1*d12 + lamb2*d22 + lamb3*d32 + lamb4*d42 + lamb5*d52
         state3 =~ lamb1*d13 + lamb2*d23 + lamb3*d33 + lamb4*d43 + lamb5*d53
         
-        diff2_1 =~ 1*state2 + 1*state3
-        diff3_2 =~ 1*state3
+        diff2_1 =~ 0*d11
+        diff3_2 =~ 0*d11
         
-        state2 ~ 1*state1
-        state3 ~ 1*state1
+        state2 ~ 1*state1 + 1*diff2_1
+        state2 ~~ 0*state2
+        
+        state3 ~ 1*state1 + 1*diff2_1 + 1*diff3_2
+        state3 ~~ 0*state3
         
         state2 ~~ 0*state3
         state2 ~~ 0*diff3_2
@@ -459,10 +468,7 @@ library(effsize)
         diff2_1 ~~ state1
         diff3_2 ~~ state1
         diff3_2 ~~ diff2_1
-        
-        state2 ~~ 0*state2
-        state3 ~~ 0*state3
-        
+
         d11 ~ 0*1
         d21 ~ x2*1
         d31 ~ x3*1
@@ -485,22 +491,22 @@ library(effsize)
       # making a loop to identify sample size for 80% power with effect from Bilwiss
       Output_lc <- data.frame()
       
-      for(participants in seq(from = 50, to = 115, by = 5)) {
+      for(participants in seq(from = 65, to = 100, by = 5)) {
           
           Out_tmp <- sim(nRep = 500,
-                         model = analyzeModel_lc,
+                         model = ana_lc,
                          n = participants,
-                         generate = popModel_lc,
+                         generate = pop_lc,
                          lavaanfun = "growth",
                          seed = 123)
           
-          Output_lc[(participants-45)/5, "samplesize"] <- participants
-          Output_lc[(participants-45)/5, "change1.1"] <- summaryParam(Out_tmp)[39, 4] # power of mean of change var
-          Output_lc[(participants-45)/5, "change1.2"] <- summaryParam(Out_tmp)[40, 4] # power of mean of change var
-          Output_lc[(participants-45)/5, "rmsea"] <- getCutoff(Out_tmp, 0.05)[4]
-          Output_lc[(participants-45)/5, "cfi"] <- getCutoff(Out_tmp, 0.05)[5]
-          Output_lc[(participants-45)/5, "tli"] <- getCutoff(Out_tmp, 0.05)[6]
-          Output_lc[(participants-45)/5, "srmr"] <- getCutoff(Out_tmp, 0.05)[7]
+          Output_lc[(participants-60)/5, "samplesize"] <- participants
+          Output_lc[(participants-60)/5, "change1.1"] <- summaryParam(Out_tmp)[49, 4] # power of mean of change var
+          Output_lc[(participants-60)/5, "change1.2"] <- summaryParam(Out_tmp)[50, 4] # power of mean of change var
+          Output_lc[(participants-60)/5, "rmsea"] <- getCutoff(Out_tmp, 0.05)[4]
+          Output_lc[(participants-60)/5, "cfi"] <- getCutoff(Out_tmp, 0.05)[5]
+          Output_lc[(participants-60)/5, "tli"] <- getCutoff(Out_tmp, 0.05)[6]
+          Output_lc[(participants-60)/5, "srmr"] <- getCutoff(Out_tmp, 0.05)[7]
       }
       
       View(Output_lc)
