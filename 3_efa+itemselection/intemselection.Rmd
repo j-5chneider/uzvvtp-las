@@ -1,0 +1,402 @@
+---
+title: "item selection"
+description: |
+  Erhebungsinstrument „Überzeugungen zum Verhältnis von Theorie und Praxis von Lehramtsstudierenden“
+
+author:
+  - name: Jürgen Schneider 
+    url: https://orcid.org/0000-0002-3772-4198
+    affiliation: University of Tübingen
+    affiliation_url: https://uni-tuebingen.de/de/28915
+  - name: Ruben Kulcsar 
+    url: http://wipaed.jku.at/wip-team/ruben-kulcsar/
+    affiliation: University of Linz
+    affiliation_url: http://wipaed.jku.at/wip-team/ruben-kulcsar/
+date: "`r Sys.Date()`"
+output: 
+  radix::radix_article:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(scipen=1, digits=3)
+```
+
+
+# data import
+```{r data import, echo = T}
+# unfortunately I cannot share the data via this file
+# however you can access the data on [link pending]
+library(tidyverse)
+itemsel <- read_csv2(file = "../data_notshare/pilot1_2019-04-25.csv")
+```
+
+<aside>
+[![](../webs/osf0.png)](https://osf0.io/jh6rx/)[&nbsp; Link to OSF-Project](https://osf0.io/jh6rx/)
+<br /><br />
+Questionnaire realized with [formr](https://formr.org/)
+<br /><br />
+see the questionnaire [here](https://showcase.formr.org/)
+</aside>
+
+
+# data cleaning
+
+## delete empty rows/ rows of test run
+data collection began at 28th Jan 2019: deleting all test runs before that date
+
+```{r data cleaning 1, echo = T}
+library(lubridate)
+
+itemsel <- itemsel %>%
+  filter(!is.na(ended)) %>%                   # delete empty cases
+  mutate(ended = dmy_hm(ended)) %>%           # transform column into date format
+  filter(ended > dmy("27-01-2019"))           # delete test runs before first data collection
+```
+
+## deleting unreasonable values
+(e.g. out of range data)
+
+__Semester__
+
+```{r data cleaning 2, echo = T}
+# semester: no unreasonable values
+ggplot(itemsel, aes(x = as.factor(semester))) +
+  geom_bar() +
+  labs(title = "Count of participants by semester",
+       caption = "Note: There were no participants from third semester.") +
+  geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
+```
+\
+
+__Standort__
+
+```{r data cleaning 3, echo = T}
+ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Stuttgart", "Tübingen", "Vechta")))) +
+  geom_bar() +
+  labs(title = "Count of participants by Standort") +
+  geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
+
+
+# Standort: Two cases from Tübingen that checked Stuttgart
+# However Stuttgart was not part of the sample and the time and date show the cases come from Tübingen
+itemsel <- itemsel %>%
+  mutate(standort = ifelse(standort == 4, 5, standort))
+
+ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübingen", "Vechta")))) +
+  geom_bar() +
+  labs(title = "Count of participants by Standort") +
+  geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
+```
+\
+
+__Subject__
+
+```{r data cleaning 4, echo = T}
+# subject: one person seemed to have checked nearly all subjects -> deletion of that value
+library(knitr)
+fach_freq <- data.frame(table(itemsel$fach))
+names(fach_freq) <- c("Combination of Subjects", "Frequency")
+kable(fach_freq, format = "html")
+
+itemsel <- itemsel %>%
+  mutate(fach = ifelse(fach == "1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 
+                       19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 
+                       36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 
+                       52", NA, fach))
+
+rm(fach_freq)
+```
+
+
+## pattern analysis (in progress)
+
+```{r data cleaning 5, layout="l-page ", echo = T}
+# pattern analysis by 10 participants
+
+# facet_plot <- itemsel %>%
+#   mutate(facet = c(rep(1:43, each=5), rep(44, 4)),
+#          id = c(rep(1:5, 43), 1:4)) %>%
+#   select(-c(standort:fach_other), -c(session:datenschutz)) %>%
+#   gather(key = "variable", value = "value", tfe_tfe_01:rel_rel_09)
+
+# ggplot(facet_plot, aes(x = variable, y = value)) +
+#   geom_line(aes(color = as.factor(id), group = as.factor(id))) +
+#   facet_wrap(facet_plot$facet, scales = "fixed") +
+#   theme(legend.position="none",
+#         strip.text.x = element_blank(),
+#         strip.background = element_blank())
+
+
+# for (i in 1:44) {
+#   tmp <- facet_plot %>%
+#     filter(facet == i)
+#   
+#   ggplot(tmp, aes(x = variable, y = value)) +
+#     geom_line(aes(color = as.factor(id), group = as.factor(id))) +
+#     theme(legend.position="none", strip.text.x = element_blank(), strip.background = element_blank())
+# }
+
+
+```
+
+
+# item descriptions
+
+* source: own creation
+* question type: likert scale
+* number of items: 68
+* value lables and numbers:
+  + 1 = "stimme gar nicht zu"
+  + 2 = ""
+  + 3 = ""
+  + 4 = ""
+  + 5 = ""
+  + 6 = "stimme voll zu"
+* scales & subscales
+  + Transfer
+    + Transfer
+    + Didaktik
+  + Transformation
+    + Transformation
+    + Selektion
+    + Enrichment
+    + Adaption
+  + Relationierung
+    + Relationierung
+
+## item labels and codes
+
+```{r item names, layout = "l-screen-inset", echo = T}
+
+# importing item labels and codes
+items <- read.csv("../data/items.csv", sep = ";")
+
+library(kableExtra)
+
+# table
+items %>%
+  kable() %>%
+  column_spec(1:2, bold = T) %>%
+  collapse_rows(columns = 1:2, valign = "middle") %>%
+  row_spec(0, extra_css = "border-bottom: 2px solid #8F8F95") %>%
+  row_spec(c(1:65), extra_css = "border-bottom: 1px solid #B9B8BC")
+  
+```
+
+## descriptive item statistics
+
+__item values__
+
+```{r descriptives1, layout = "l-page", echo = T}
+efa_data <- itemsel %>%
+  select("tfe_tfe_01":"rel_rel_09")
+
+library(fBasics)
+tmp_desc <-basicStats(efa_data)[c("Mean", "Stdev", "Median", "Minimum", "Maximum", "nobs", "NAs"),]
+
+
+kable(tmp_desc, digits = 2) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%")
+```
+\
+\
+
+
+__density plots__
+
+```{r descriptives2, layout = "l-screen-inset", echo = T, fig.width = 15, fig.height = 12}
+
+efa_data_l <- gather(efa_data, key = "variable", value = "value", na.rm = T)
+
+ggplot(efa_data_l, aes(x=value)) +
+  facet_wrap(as.factor(efa_data_l$variable)) +
+  stat_density(bw = 0.5)
+```
+
+
+# Exploratory factor analysis
+
+## Comparing number of factors via fit indices
+
+__Estimator: Maximum Likelihood__
+
+```{r nfactors1, layout="l-page", echo = T, fig.height = 6}
+library(psych)
+
+corMat <- cor(efa_data, use = "pairwise.complete.obs")
+
+nfactors(x = corMat, n.obs = 219, rotate = "oblimin", fm = "mle", n = 12)
+```
+\
+\
+
+__Estimator: Minimum Residual__
+
+```{r nfactors2, layout="l-page", echo = T, fig.height = 6}
+nfactors(x = corMat, n.obs = 219, rotate = "oblimin", fm = "minres", n = 12)
+```
+
+
+__Inference__
+Indices point to solutions between 3 and 6 factors.  
+We will have a deeper look into these four different solutions, their consistency within factors and possible content interpretation.
+\
+
+
+## 3 factor solution
+
+```{r fa3.1, layout="l-page", echo = T}
+# three factors with oblimin rotation and ML estimator
+fa3  <- fa(r = corMat, nfactors = 3, n.obs = 219, rotate = "oblimin", fm = "ml")
+fa.diagram(fa3)
+```
+\
+\
+
+__factors with ordered items ($\lambda$>.4) and item labels__
+
+```{r fa3.2, layout="l-page", echo = T}
+# preparing item data.frame
+rownames(items) <- items$Code
+
+items <- items %>%
+  select(Item.Label)
+
+# sort items according to factor and loading
+fa3_tab <- fa.lookup(f = fa3, dictionary = items, cut = .4)
+
+kable(fa3_tab) %>%
+  row_spec(13:27, background = "#c4fdff") %>%
+  scroll_box(width = "100%")
+
+```
+
+
+## 4 factor solution
+
+```{r fa4.1, layout="l-page", echo = T}
+# four factors with oblimin rotation and ML estimator
+fa4  <- fa(r = corMat, nfactors = 4, n.obs = 219, rotate = "oblimin", fm = "ml")
+fa.diagram(fa4)
+```
+\
+\
+
+__factors with ordered items ($\lambda$>.4) and item labels__
+
+```{r fa4.2, layout="l-page", echo = T}
+# sort items according to factor and loading
+fa4_tab <- fa.lookup(f = fa4, dictionary = items, cut = .4)
+
+kable(fa4_tab) %>%
+  row_spec(17:24, background = "#c4fdff") %>%
+  row_spec(20, background = "#ff9a9a") %>%
+  row_spec(33:39, background = "#c4fdff") 
+
+```
+
+## 5 factor solution
+
+```{r fa5.1, layout="l-page", echo = T}
+# five factors with oblimin rotation and ML estimator
+fa5  <- fa(r = corMat, nfactors = 5, n.obs = 219, rotate = "oblimin", fm = "ml")
+fa.diagram(fa5)
+```
+\
+\
+
+__factors with ordered items ($\lambda$>.4) and item labels__
+
+```{r fa5.2, layout="l-page", echo = T}
+# sort items according to factor and loading
+fa5_tab <- fa.lookup(f = fa5, dictionary = items, cut = .4)
+
+kable(fa5_tab) %>%
+  row_spec(10:16, background = "#c4fdff") %>%
+  row_spec(23, background = "#ff9a9a") %>%
+  row_spec(24:30, background = "#c4fdff")
+
+```
+
+## 6 factor solution
+
+```{r fa6.1, layout="l-page", echo = T}
+# six factors with oblimin rotation and ML estimator
+fa6  <- fa(r = corMat, nfactors = 6, n.obs = 219, rotate = "oblimin", fm = "ml")
+fa.diagram(fa6)
+```
+\
+\
+
+__factors with ordered items ($\lambda$>.4) and item labels__
+
+```{r fa6.2, layout="l-page", echo = T}
+# sort items according to factor and loading
+fa6_tab <- fa.lookup(f = fa6, dictionary = items, cut = .4)
+
+kable(fa6_tab) %>%
+  row_spec(9:15, background = "#c4fdff") %>%
+  row_spec(23:27, background = "#c4fdff") %>%
+  row_spec(33:35, background = "#c4fdff") %>%
+  row_spec(36, background = "#ff9a9a") %>%
+  scroll_box(width = "100%")
+
+```
+\
+\
+
+
+# Reliability Analysis
+
+Fit indices between the different factor solutions are quite similar. However, when consulting the items with highest loadings, the four factor solution
+
+* allows clear interpretation of the factors itself (homogenity within factors)
+* allows clear distinction of interpretation between factors (heterogenity between factors)
+
+
+## 4 Factor, McDonalds $\omega$
+
+```{r rel4, layout="l-page", echo = T}
+
+# subsetting data for reliability analysis
+rel_data4.1 <- efa_data %>%
+  select("tfe_tfe_03", "tfe_tfe_08", "tfe_did_01", "tfe_did_05", "tfe_tfe_02")    # 5 items with highest weights from transfer factor
+
+rel_data4.2 <- efa_data %>%
+  select("tfo_sel_01", "tfo_sel_04", "tfo_sel_05", "tfo_sel_08", "tfo_sel_09")    # 5 items with highest weights from selection factor
+
+rel_data4.3 <- efa_data %>%
+  select("tfo_enr_01", "tfo_enr_02", "tfo_enr_03", "tfo_enr_04", "tfo_enr_05")    # 5 items with highest weights from enrichment factor
+
+rel_data4.4 <- efa_data %>%
+  select("rel_rel_02", "rel_rel_03", "rel_rel_08", "rel_rel_09")                  # 4 items with highest weights from relationierung factor 
+                                                                                  # (with one negative and one transformation item deleted)
+
+```
+
+* __McDonalds__ $\sf{\omega_{Transfer}}$= `r MBESS::ci.reliability(rel_data4.1)$est`, __95%CI__[`r MBESS::ci.reliability(rel_data4.1)$ci.lower`, `r MBESS::ci.reliability(rel_data4.1)$ci.upper`]
+* __McDonalds__ $\sf{\omega_{Selektion}}$= `r MBESS::ci.reliability(rel_data4.2)$est`, __95%CI__[`r MBESS::ci.reliability(rel_data4.2)$ci.lower`, `r MBESS::ci.reliability(rel_data4.2)$ci.upper`]
+* __McDonalds__ $\sf{\omega_{Enrichment}}$= `r MBESS::ci.reliability(rel_data4.3)$est`, __95%CI__[`r MBESS::ci.reliability(rel_data4.3)$ci.lower`, `r MBESS::ci.reliability(rel_data4.3)$ci.upper`]
+* __McDonalds__ $\sf{\omega_{Relationierung}}$= `r MBESS::ci.reliability(rel_data4.4)$est`, __95%CI__[`r MBESS::ci.reliability(rel_data4.4)$ci.lower`, `r MBESS::ci.reliability(rel_data4.4)$ci.upper`]
+
+## 4 Factor, items of instrument
+
+```{r items4, layout="l-page", echo = T}
+items_4fact <- items %>%
+  dplyr::filter(rownames(items) %in% names(rel_data4.1) | 
+                rownames(items) %in% names(rel_data4.2) | 
+                rownames(items) %in% names(rel_data4.3) | 
+                rownames(items) %in% names(rel_data4.4) ) %>%
+  mutate(Skala = c(rep("Transfer (Transfer & Didaktik)", 5), rep("Selektion", 5), rep("Enrichment", 5), rep("Relationierung", 4))) %>%
+  select(Skala, Item.Label)
+
+kable(items_4fact) %>%
+  row_spec(6:10, background = "#c4fdff") %>%
+  row_spec(16:19, background = "#c4fdff") %>%
+  collapse_rows(columns = 1, valign = "middle") %>%
+  scroll_box(width = "100%")
+```

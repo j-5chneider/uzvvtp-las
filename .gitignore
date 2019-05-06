@@ -34,3 +34,9 @@ vignettes/*.pdf
 
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
+
+#  Data we can't share
+/data_notshare
+
+# logo we can't share
+/webs/logo.gif

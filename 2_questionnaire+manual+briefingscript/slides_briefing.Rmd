@@ -81,7 +81,7 @@ library(shiny)
 
 ## Welche Überzeugungen? | 3 Hauptmodelle
 <div class = "container">
-  <div class="box"><img src="../webs/transfer.png" height="75px" style="margin-top:25px" />  
+  <div class="box30"><img src="../webs/transfer.png" height="75px" style="margin-top:25px" />  
 __Transfer__  
 \
 \
@@ -89,7 +89,7 @@ __Transfer__
 <span style="font-size:0.8em">Aus wissenschaftlichem Wissen werden __direkt__ Handlungsregeln abgeleitet.</span>
   </div>
   
-  <div class="box"><img src="../webs/transform.png" height="75px" style="margin-top:25px" />  
+  <div class="box30"><img src="../webs/transform.png" height="75px" style="margin-top:25px" />  
 __Transformation__  
 \
 \
@@ -97,7 +97,7 @@ __Transformation__
 <span style="font-size:0.8em">Wissenschaftliches Wissen wird für die Praxis in Handlungswissen __verändert__.</span>
   </div>
   
-  <div class="box"><img src="../webs/relatio.png" height="100px" />  
+  <div class="box30"><img src="../webs/relatio.png" height="100px" />  
 __Relationierung__  
 \
 \
@@ -133,6 +133,9 @@ ggplot(plotdata, aes(x=Semester, y=y, color=ueb)) +
   scale_x_continuous(breaks = c(1:10)) +
   scale_y_continuous(breaks = c(1, 2, 3, 4, 5, 6), limits = c(1,6), labels = c("stimme gar \n nicht zu", "", "", "", "", "stimme \n voll zu")) +
   labs(x = "Semester", 
+       y = "") +
+  scale_y_continuous(breaks = c(1, 2, 3, 4), limits = c(1,4), labels = c("stimmt\n nicht", "", "", "stimmt \n genau")) +
+  labs(x = "Zeitpunkt", 
        y = "")
 
 
