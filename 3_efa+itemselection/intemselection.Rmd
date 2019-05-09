@@ -148,6 +148,7 @@ rm(fach_freq)
 * source: own creation
 * question type: likert scale
 * number of items: 68
+* item question: "Bitte geben Sie an, wie stark die folgenden Aussagen über das Verhältnis von „Theorie“ und „Praxis“ Ihrer Meinung nach zutreffen!"
 * value lables and numbers:
   + 1 = "stimme gar nicht zu"
   + 2 = ""
