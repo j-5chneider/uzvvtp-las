@@ -1,0 +1,100 @@
+---
+title: "Preregistration Validation"
+description: |
+  Erhebungsinstrument „Überzeugungen zum Verhältnis von Theorie und Praxis von Lehramtsstudierenden“
+
+author:
+  - name: Jürgen Schneider 
+    url: https://orcid.org/0000-0002-3772-4198
+    affiliation: University of Tübingen
+    affiliation_url: https://uni-tuebingen.de/de/28915
+date: "`r Sys.Date()`"
+output: 
+  radix::radix_article:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(scipen=1, digits=3)
+```
+
+# Confirmatory Factor Analysis
+
+Testing for factor structure and measurement invariance.
+We expect equal loading structure, but not equal intercept structure between treatment groups.
+
+```{r cfa, error=F, warning=F, message=F, echo=T}
+library(lavaan)
+
+f4.model <- ' transfer   =~ tfe_1 + tfe_2 + tfe_3 + tfe_4 + tfe_5
+              selektion  =~ sel_1 + sel_2 + sel_3 + sel_4 + sel_5
+              enrichment =~ enr_1 + enr_2 + enr_3 + enr_4 + enr_5
+              relation   =~ rel_1 + rel_2 + rel_3 + rel_4
+              '
+
+fit_f4 <- cfa(f4.model, 
+              data = validierung, 
+              group = "treat")
+summary(fit_f4, fit.measures = TRUE)
+
+
+library(semTools)
+measurementInvariance(f4.model, 
+                      data = validierung, 
+                      group = "treat")
+```
+\
+\
+
+# Experimental Study
+
+We realized two different stimuli preceding a run through the instrument each. The stimuli are descriptions of two theories from education relevant to classroom practice: Cognitive Theory of Multimedia Learning (CTML) vs. Strukturtheoretische Professionstheorie (SPT). The conditions are varied within person and randomized in their order between person. The conditions were designed to have an effect on the subscale "Transfer": The short description in the CTML-condition was written to be especially suitable to beliefs of "Transfer". In this subscale we thus expect ratings to be higher in the CTML-condition (vs. SPT-condition).  
+\
+
+For the other subscales results will be computed exploratory.
+
+```{r exp study, error=F, warning=F, message=F, echo=T}
+
+exp.model <- ' transfer   =~ tfe_1 + tfe_2 + tfe_3 + tfe_4 + tfe_5
+               selektion  =~ sel_1 + sel_2 + sel_3 + sel_4 + sel_5
+               enrichment =~ enr_1 + enr_2 + enr_3 + enr_4 + enr_5
+               relation   =~ rel_1 + rel_2 + rel_3 + rel_4
+               
+               transfer ~ treat
+               selektion ~ treat
+               enrichment ~ treat
+               relation ~ treat
+            '
+
+fit_exp <- sem(exp.model, 
+               data = validierung)
+summary(fit_exp, fit.measures = TRUE)
+```
+\
+\
+
+
+# Convergent Validity
+
+* We expect "Transfer" to have a moderate positive correlation with "umsetzung"
+* We expect "Transfer" to have a negative correlation with "differenz"
+* We expect "enrichment" to have a small positive correlation with "differenz"
+* All other results will be computed exploratory
+
+```{r conv val, error=F, warning=F, message=F, echo=T}
+
+con.model <- ' transfer   =~ tfe_1 + tfe_2 + tfe_3 + tfe_4 + tfe_5
+               selektion  =~ sel_1 + sel_2 + sel_3 + sel_4 + sel_5
+               enrichment =~ enr_1 + enr_2 + enr_3 + enr_4 + enr_5
+               relation   =~ rel_1 + rel_2 + rel_3 + rel_4
+               
+               umsetzung =~ flen_UM1 + flen_UM2 + flen_UM3 + flen_UM4
+               differenz =~ flen_WI1 + flen_WI2 + flen_WI3
+            '
+
+fit_con <- cfa(con.model, 
+               data = validierung)
+summary(fit_con, fit.measures = TRUE)
+```

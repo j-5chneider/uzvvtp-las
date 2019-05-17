@@ -401,3 +401,22 @@ kable(items_4fact) %>%
   collapse_rows(columns = 1, valign = "middle") %>%
   scroll_box(width = "100%")
 ```
+
+
+# reformulation of several items
+
+Several items of the instrument will be reformulated due to possible two-dimensionality (that can be further avoided): E.g. the item "Wissenschaftliches Wissen wird durch Lehrer*innen unmittelbar auf praktisches Handeln in der Schule übertragen." asks (1) if there is a __possibility__ of transfer and (2) if teachers __actually__ perform transformations (an empirical question). We decided to lose the empirical side of the question as we are interested in the perceived possibilities.  
+\
+
+In column "itemlabel_re", deleted words are marked by strikethrough, newly added words are italicised.  
+New item labels can be found in the column "itemlabel".
+
+```{r items reformulate, layout="l-page", echo = T}
+items_4f <- read.csv("../data/items_4f.csv", sep = ";")
+
+kable(items_4f) %>%
+  row_spec(6:10, background = "#c4fdff") %>%
+  row_spec(16:19, background = "#c4fdff") %>%
+  collapse_rows(columns = 1, valign = "middle") %>%
+  scroll_box(width = "100%")
+```
