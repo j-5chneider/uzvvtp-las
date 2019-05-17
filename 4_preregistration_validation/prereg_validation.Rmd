@@ -25,7 +25,7 @@ options(scipen=1, digits=3)
 Testing for factor structure and measurement invariance.
 We expect equal loading structure, but not equal intercept structure between treatment groups.
 
-```{r cfa, error=F, warning=F, message=F, echo=T}
+```{r cfa, error=F, warning=F, message=F, echo=T, eval=F}
 library(lavaan)
 
 f4.model <- ' transfer   =~ tfe_1 + tfe_2 + tfe_3 + tfe_4 + tfe_5
@@ -55,7 +55,14 @@ We realized two different stimuli preceding a run through the instrument each. T
 
 For the other subscales results will be computed exploratory.
 
-```{r exp study, error=F, warning=F, message=F, echo=T}
+## The stimuli (German)
+
+* __CTML group__: "Der „Spatial Contiguity Effect“ aus der Theorie des multimedialen Lernens, trifft Aussagen über die Kombination von Text und Bild in Lernmaterialien, beispielsweise bei der Gestaltung von Arbeitsblättern. Hierfür tragen Schroeder & Cenkci (2018) Befunde zusammen, ob Bilder und erklärender Text separat (getrennt nebeneinander) oder integriert (einzelne Textstücke direkt an relevanter Stelle im Bild) den Lernerfolg besser fördern. Das Ergebnis zeigt, dass integrierte Darstellungen einen positiven Effekt auf die Lernleistung besitzen. Dies gilt für computerbasierte Darstellungen, aber besonders für Darstellungen auf Arbeitsblättern. Wurden mobile Endgeräte verwendet, so konnte kein Unterschied in der Lernleistung zwischen den beiden Darstellungsformen festgestellt werden."
+* __SPT group__: "Im strukturtheoretischen Ansatz zur Professionalität im Lehrberuf adressiert Helsper (2004) das „Arbeitsbündnis zwischen Lehrperson und Schüler/-in“. Der Lehrerberuf ist aus dieser Perspektive durch Aufgaben und Anforderungen geprägt, die in sich widersprüchlich sind, also per se nicht aufgelöst werden können. So wird an Lehrpersonen beispielsweise die Anforderung gerichtet, sich als Person auf Lernende einzulassen und Nähe aufzubauen, andererseits müssen sie jedoch ihrer Rolle als Lehrperson gerecht werden, die z.B. bei der Notengebung eine gewisse Distanz gebietet (Nähe-Distanz-Antinomie). Beide Anforderungen vollauf zu realisieren ist nicht möglich und so scheint es für Lehrpersonen unmöglich „richtig“ zu handeln. Professionelles Handeln von Lehrpersonen äußert sich folglich darin, diese Widersprüche auszuhalten und sie sachgerecht zu bewältigen."
+
+## Data analysis
+
+```{r exp study, error=F, warning=F, message=F, echo=T, eval=F}
 
 exp.model <- ' transfer   =~ tfe_1 + tfe_2 + tfe_3 + tfe_4 + tfe_5
                selektion  =~ sel_1 + sel_2 + sel_3 + sel_4 + sel_5
@@ -83,7 +90,7 @@ summary(fit_exp, fit.measures = TRUE)
 * We expect "enrichment" to have a small positive correlation with "differenz"
 * All other results will be computed exploratory
 
-```{r conv val, error=F, warning=F, message=F, echo=T}
+```{r conv val, error=F, warning=F, message=F, echo=T, eval=F}
 
 con.model <- ' transfer   =~ tfe_1 + tfe_2 + tfe_3 + tfe_4 + tfe_5
                selektion  =~ sel_1 + sel_2 + sel_3 + sel_4 + sel_5
