@@ -40,3 +40,6 @@ rsconnect/
 
 # logo we can't share
 /webs/logo.gif
+
+# password in clear text so I can't share
+4_preregistration_validation/live-datastream.Rmd

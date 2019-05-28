@@ -5,7 +5,7 @@ The latest milestones and timeline can be found here on [OSF](https://osf.io/p7j
   
 
 ## Current version
-The current version of the questionnaire can be examined on [showcase.formr.org](https://showcase.formr.org/)
+The current version of the questionnaire can be examined on [showcase.formr.org](https://showcase.formr.org/) (phase 1) and here [showcase2.formr.org](https://showcase2.formr.org/) (phase 2).
 
 ## Preregistration
 You'll find scripts with power analyses for CFAs that were basis to the preregistration sampling plan [here (OSF)](https://osf.io/q4khn/) or [here (github)](https://github.com/j-5chneider/uzvvtp-las/blob/master/1_preregistration_analyses/power_analyses.R).

@@ -34,7 +34,7 @@ itemsel <- read_csv2(file = "../data_notshare/pilot1_2019-04-25.csv")
 ```
 
 <aside>
-[![](../webs/osf0.png)](https://osf0.io/jh6rx/)[&nbsp; Link to OSF-Project](https://osf0.io/jh6rx/)
+[![](../webs/osf0.png)](https://osf.io/jh6rx/)[&nbsp; Link to OSF-Project](https://osf.io/jh6rx/)
 <br /><br />
 Questionnaire realized with [formr](https://formr.org/)
 <br /><br />

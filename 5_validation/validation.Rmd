@@ -1,0 +1,88 @@
+---
+title: "validation"
+description: |
+  Erhebungsinstrument „Überzeugungen zum Verhältnis von Theorie und Praxis von Lehramtsstudierenden“
+
+author:
+  - name: Jürgen Schneider 
+    url: https://orcid.org/0000-0002-3772-4198
+    affiliation: University of Tübingen
+    affiliation_url: https://uni-tuebingen.de/de/28915
+  - name: Ruben Kulcsar 
+    url: http://wipaed.jku.at/wip-team/ruben-kulcsar/
+    affiliation: University of Linz
+    affiliation_url: http://wipaed.jku.at/wip-team/ruben-kulcsar/
+date: "`r Sys.Date()`"
+output: 
+  radix::radix_article:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(scipen=1, digits=3)
+```
+
+
+# data import
+```{r data import, echo = T}
+# unfortunately I cannot share the data via this file
+# however you can access the data on [link pending]
+library(tidyverse)
+valid <- read_csv2(file = "../data_notshare/pilot2_2019-05-28_sicherung.csv")
+```
+
+<aside>
+[![](../webs/osf0.png)](https://osf.io/jh6rx/)[&nbsp; Link to OSF-Project](https://osf.io/jh6rx/)
+<br /><br />
+Questionnaire realized with [formr](https://formr.org/)
+<br /><br />
+see the questionnaire [here](https://showcase2.formr.org/)
+</aside>
+
+
+# data cleaning
+
+## delete empty rows/ rows of test run
+
+
+```{r data cleaning 1, echo = T}
+valid <- valid %>%
+  filter(!is.na(lehramt))                 # only include students that completed the questionnaire
+```
+
+## deleting unreasonable values
+(e.g. out of range data)
+
+__Semester__
+
+```{r data cleaning 2, echo = T}
+# semester: no unreasonable values
+ggplot(valid, aes(x = as.factor(semester))) +
+  geom_bar() +
+  labs(title = "Count of participants by semester",
+       caption = "Note: There were no participants from third semester.") +
+  geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
+```
+\
+
+__Standort__
+
+```{r data cleaning 3, echo = T}
+ggplot(valid, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübingen")))) +  # 1= Flensburg, 2= Linz, 3= München, 4= Stuttgart, 5= Tübingen, 6= Vechta, 7= andere
+  geom_bar() +
+  labs(title = "Count of participants by Standort") +
+  geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
+
+
+# Standort: Two cases from Tübingen that checked Stuttgart
+# However Stuttgart was not part of the sample and the time and date show the cases come from Tübingen
+# itemsel <- itemsel %>%
+#   mutate(standort = ifelse(standort == 4, 5, standort))
+# 
+# ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübingen", "Vechta")))) +
+#   geom_bar() +
+#   labs(title = "Count of participants by Standort") +
+#   geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
+```
