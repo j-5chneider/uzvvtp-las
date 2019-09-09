@@ -2,7 +2,6 @@
 title: "validation"
 description: |
   Erhebungsinstrument „Überzeugungen zum Verhältnis von Theorie und Praxis von Lehramtsstudierenden“
-
 author:
   - name: Jürgen Schneider 
     url: https://orcid.org/0000-0002-3772-4198
@@ -12,11 +11,22 @@ author:
     url: http://wipaed.jku.at/wip-team/ruben-kulcsar/
     affiliation: University of Linz
     affiliation_url: http://wipaed.jku.at/wip-team/ruben-kulcsar/
+  - name: // Further Cooperation
+  - name: Thomas Fischer 
+    url: https://www.uni-flensburg.de/erziehungswissenschaft/wer-wir-sind/personen/fischer-thomas/
+    affiliation: University of Flensburg
+    affiliation_url: https://www.uni-flensburg.de/erziehungswissenschaft/wer-wir-sind/personen/fischer-thomas/
+  - name: Kathrin Rheinländer 
+    url: https://www.uni-vechta.de/universitaet/personenverzeichnis/kathrin-rheinlaender/
+    affiliation: University of Vechta
+    affiliation_url: https://www.uni-vechta.de/universitaet/personenverzeichnis/kathrin-rheinlaender/
 date: "`r Sys.Date()`"
 output: 
   radix::radix_article:
     toc: true
     toc_depth: 2
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -24,13 +34,17 @@ knitr::opts_chunk$set(echo = FALSE)
 options(scipen=1, digits=3)
 ```
 
+# preregistration
+
+Available here: https://osf.io/2jw7m  
+Preregistration dates after the data collection, last modification was - however - before data collection. I simply clicked on "save" and not on "register" at the time.
 
 # data import
 ```{r data import, echo = T}
 # unfortunately I cannot share the data via this file
 # however you can access the data on [link pending]
 library(tidyverse)
-valid <- read_csv2(file = "../data_notshare/pilot2_2019-05-28_sicherung.csv")
+valid <- read_csv2(file = "../data_notshare/pilot2_2019-06-25.csv")
 ```
 
 <aside>
@@ -52,7 +66,7 @@ valid <- valid %>%
   filter(!is.na(lehramt))                 # only include students that completed the questionnaire
 ```
 
-## deleting unreasonable values
+## unreasonable values/ sample description
 (e.g. out of range data)
 
 __Semester__
@@ -62,7 +76,8 @@ __Semester__
 ggplot(valid, aes(x = as.factor(semester))) +
   geom_bar() +
   labs(title = "Count of participants by semester",
-       caption = "Note: There were no participants from third semester.") +
+       caption = "Note: There were no participants from 11th, 13th, 14th, 15th semester.") +
+  xlab("Semester") +
   geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
 ```
 \
@@ -70,19 +85,455 @@ ggplot(valid, aes(x = as.factor(semester))) +
 __Standort__
 
 ```{r data cleaning 3, echo = T}
-ggplot(valid, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübingen")))) +  # 1= Flensburg, 2= Linz, 3= München, 4= Stuttgart, 5= Tübingen, 6= Vechta, 7= andere
+ggplot(valid, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübingen", "Vechta")))) +  # 1= Flensburg, 2= Linz, 3= München, 4= Stuttgart, 5= Tübingen, 6= Vechta, 7= andere
   geom_bar() +
   labs(title = "Count of participants by Standort") +
+  xlab("") +
   geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
+```
+
+# Confirmatory Factor Analysis
+
+## current data
+
+Testing for factor structure and measurement invariance.
+We expect equal loading structure, but not equal intercept structure between treatment groups.
+
+```{r cfa, error=F, warning=F, message=F, echo=T, layout = "l-page"}
+## wrangle data ##
+valid_l <- valid %>%
+  mutate(id = 1:length(.$session)) %>%                                                 # create ID
+  select("flen_AN1":"rel_4_sr", "id") %>%
+  gather(key = "variable", value = "value", na.rm = T, 1:51) %>%                       # create long data set
+  mutate(treat = case_when(                                                            # create treatment variable
+                    str_sub(variable, -3, -1) ==  "_st" ~ "transfer",
+                    str_sub(variable, -3, -1) ==  "_sr" ~ "relationierung",
+                    TRUE ~ NA_character_
+                    ),
+         variable = case_when(                                                         # rename variable
+                      str_sub(variable, -3, -1) ==  "_st" ~ str_sub(variable, 1, -4),
+                      str_sub(variable, -3, -1) ==  "_sr" ~ str_sub(variable, 1, -4),
+                      TRUE ~ variable
+  )
+  )
+
+valid_cfa <- valid_l %>%
+  filter(!is.na(treat) & variable != "tc") %>%
+  spread(key = "variable", value = "value") %>%
+  mutate(treat = case_when(
+                    treat == "relationierung" ~ 1,
+                    treat == "transfer"       ~ 0
+  ))
+
+# the model
+library(lavaan)
+f4.model <- ' level: 1
+                transfer_w   =~ t1*tfe_1 + t2*tfe_2 + t3*tfe_3 + t4*tfe_4 + t5*tfe_5
+                selektion_w  =~ s1*sel_1 + s2*sel_2 + s3*sel_3 + s4*sel_4 + s5*sel_5
+                enrichment_w =~ e1*enr_1 + e2*enr_2 + e3*enr_3 + e4*enr_4 + e5*enr_5
+                relation_w   =~ r1*rel_1 + r2*rel_2 + r3*rel_3 + r4*rel_4
+
+              level: 2
+                transfer_b   =~ t1*tfe_1 + t2*tfe_2 + t3*tfe_3 + t4*tfe_4 + t5*tfe_5
+                selektion_b  =~ s1*sel_1 + s2*sel_2 + s3*sel_3 + s4*sel_4 + s5*sel_5
+                enrichment_b =~ e1*enr_1 + e2*enr_2 + e3*enr_3 + e4*enr_4 + e5*enr_5
+                relation_b   =~ r1*rel_1 + r2*rel_2 + r3*rel_3 + r4*rel_4
+                
+                tfe_2 ~~ 0*tfe_2
+                sel_5 ~~ sel_1
+                enr_2 ~~ 0*enr_2
+                rel_3 ~~ 0*rel_3
+              '
+
+fit_f4 <- sem(f4.model, 
+              data = valid_cfa, 
+              cluster = "id"
+              )
+summary(fit_f4, fit.measures = TRUE)    # mi <- modindices(fit_f4)
+                                        # mi[order(mi$mi, decreasing = T),]
+
+# Ausschluss von enr_5, tfe_4, sel_2 aufgrund geringer Ladung und inhaltlich geringer Passung
+# tfe_4: Voraussetzung stark betont
+# enr_5: bei anderen: Differenz betont
+# sel_2: aktive Lehrerrolle
+f4.model2 <- 'level: 1
+                transfer_w   =~ t1*tfe_1 + t2*tfe_2 + t3*tfe_3 + t5*tfe_5
+                selektion_w  =~ s1*sel_1 + s3*sel_3 + s4*sel_4 + s5*sel_5
+                enrichment_w =~ e1*enr_1 + e2*enr_2 + e3*enr_3 + e4*enr_4 
+                relation_w   =~ r1*rel_1 + r2*rel_2 + r3*rel_3 + r4*rel_4
+                
+              level: 2
+                transfer_b   =~ t1*tfe_1 + t2*tfe_2 + t3*tfe_3 + t5*tfe_5
+                selektion_b  =~ s1*sel_1 + s3*sel_3 + s4*sel_4 + s5*sel_5
+                enrichment_b =~ e1*enr_1 + e2*enr_2 + e3*enr_3 + e4*enr_4 
+                relation_b   =~ r1*rel_1 + r2*rel_2 + r3*rel_3 + r4*rel_4
+                
+                tfe_2 ~~ 0*tfe_2
+                sel_5 ~~ sel_1
+                enr_2 ~~ 0*enr_2
+                rel_3 ~~ 0*rel_3
+             '
+
+fit_f4.2 <- sem(f4.model2, 
+              data = valid_cfa, 
+              cluster = "id",
+              std.lv=TRUE
+              )
+summary(fit_f4.2, fit.measures = TRUE)
 
 
-# Standort: Two cases from Tübingen that checked Stuttgart
-# However Stuttgart was not part of the sample and the time and date show the cases come from Tübingen
-# itemsel <- itemsel %>%
-#   mutate(standort = ifelse(standort == 4, 5, standort))
+
+# # test for measurment invariance: model without restrictions on loadings
+# f4.model2.2 <- 'level: 1
+#                 transfer_w   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
+#                 selektion_w  =~ sel_1 + sel_3 + sel_4 + sel_5
+#                 enrichment_w =~ enr_1 + enr_2 + enr_3 + enr_4 
+#                 relation_w   =~ rel_1 + rel_2 + rel_3 + rel_4
+#                 
+#               level: 2
+#                 transfer_b   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
+#                 selektion_b  =~ sel_1 + sel_3 + sel_4 + sel_5
+#                 enrichment_b =~ enr_1 + enr_2 + enr_3 + enr_4 
+#                 relation_b   =~ rel_1 + rel_2 + rel_3 + rel_4
+#                 
+#                 tfe_2 ~~ 0*tfe_2
+#                 sel_5 ~~ sel_1
+#                 enr_2 ~~ 0*enr_2
+#                 rel_3 ~~ 0*rel_3
+#              '
 # 
-# ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübingen", "Vechta")))) +
-#   geom_bar() +
-#   labs(title = "Count of participants by Standort") +
-#   geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
+# fit_f4.2.2 <- sem(f4.model2.2, 
+#               data = valid_cfa, 
+#               cluster = "id",
+#               std.lv=TRUE
+#               )
+# 
+# anova(fit_f4.2, fit_f4.2.2)
+
+
+
+
+
+# # test for measurement invariance | PENDING
+# library(semTools)
+# mi_f4 <- measEq.syntax(configural.model = f4.model2,      # ERROR SAMUEL
+#                        data = valid_cfa,
+#                        group = "treat",
+#                        cluster = "id")
+```
+
+
+## reliability
+
+```{r omega, echo = T}
+## McDonalds Omega for these factors ##
+
+# Transfer
+rel_data4.1.0 <- valid_cfa %>%
+  filter(treat == 0) %>%
+  select("tfe_1" , "tfe_2" , "tfe_3" , "tfe_5") 
+
+rel_tr_ctml <- MBESS::ci.reliability(rel_data4.1.0)$est
+rel_tr_ctml_l <- MBESS::ci.reliability(rel_data4.1.0)$ci.lower
+rel_tr_ctml_u <- MBESS::ci.reliability(rel_data4.1.0)$ci.upper
+
+rel_data4.1.1 <- valid_cfa %>%
+  filter(treat == 1) %>%
+  select("tfe_1" , "tfe_2" , "tfe_3" , "tfe_5")
+
+rel_tr_stp <- MBESS::ci.reliability(rel_data4.1.1)$est
+rel_tr_stp_l <- MBESS::ci.reliability(rel_data4.1.1)$ci.lower
+rel_tr_stp_u <- MBESS::ci.reliability(rel_data4.1.1)$ci.upper
+
+# Selektion
+rel_data4.2.0 <- valid_cfa %>%
+  filter(treat == 0) %>%
+  select("sel_1" , "sel_3" , "sel_4" , "sel_5") 
+
+rel_se_ctml <- MBESS::ci.reliability(rel_data4.2.0)$est
+rel_se_ctml_l <- MBESS::ci.reliability(rel_data4.2.0)$ci.lower
+rel_se_ctml_u <- MBESS::ci.reliability(rel_data4.2.0)$ci.upper
+
+rel_data4.2.1 <- valid_cfa %>%
+  filter(treat == 1) %>%
+  select("sel_1" , "sel_3" , "sel_4" , "sel_5") 
+
+rel_se_stp <- MBESS::ci.reliability(rel_data4.2.1)$est
+rel_se_stp_l <- MBESS::ci.reliability(rel_data4.2.1)$ci.lower
+rel_se_stp_u <- MBESS::ci.reliability(rel_data4.2.1)$ci.upper
+
+
+# Enrichment
+rel_data4.3.0 <- valid_cfa %>%
+  filter(treat == 0) %>%
+  select("enr_1" , "enr_2" , "enr_3" , "enr_4") 
+
+rel_en_ctml <- MBESS::ci.reliability(rel_data4.3.0)$est
+rel_en_ctml_l <- MBESS::ci.reliability(rel_data4.3.0)$ci.lower
+rel_en_ctml_u <- MBESS::ci.reliability(rel_data4.3.0)$ci.upper
+
+rel_data4.3.1 <- valid_cfa %>%
+  filter(treat == 1) %>%
+  select("enr_1" , "enr_2" , "enr_3" , "enr_4") 
+
+rel_en_stp <- MBESS::ci.reliability(rel_data4.3.1)$est
+rel_en_stp_l <- MBESS::ci.reliability(rel_data4.3.1)$ci.lower
+rel_en_stp_u <- MBESS::ci.reliability(rel_data4.3.1)$ci.upper
+
+# Relationierung
+rel_data4.4.0 <- valid_cfa %>%
+  filter(treat == 0) %>%
+  select("rel_1" , "rel_2" , "rel_3" , "rel_4") 
+
+rel_re_ctml <- MBESS::ci.reliability(rel_data4.4.0)$est
+rel_re_ctml_l <- MBESS::ci.reliability(rel_data4.4.0)$ci.lower
+rel_re_ctml_u <- MBESS::ci.reliability(rel_data4.4.0)$ci.upper
+
+rel_data4.4.1 <- valid_cfa %>%
+  filter(treat == 1) %>%
+  select("rel_1" , "rel_2" , "rel_3" , "rel_4") 
+
+rel_re_stp <- MBESS::ci.reliability(rel_data4.4.1)$est
+rel_re_stp_l <- MBESS::ci.reliability(rel_data4.4.1)$ci.lower
+rel_re_stp_u <- MBESS::ci.reliability(rel_data4.4.1)$ci.upper
+```
+
+* __Transfer__
+  + __McDonalds__ $\sf{\omega_{CTML}}$= `r rel_tr_ctml`, __95%CI__[`r rel_tr_ctml_l`, `r rel_tr_ctml_u`]
+  + __McDonalds__ $\sf{\omega_{STP}}$= `r rel_tr_stp`, __95%CI__[`r rel_tr_stp_l`, `r rel_tr_stp_u`]
+* __Selektion__
+  + __McDonalds__ $\sf{\omega_{CTML}}$= `r rel_se_ctml`, __95%CI__[`r rel_se_ctml_l`, `r rel_se_ctml_u`]
+  + __McDonalds__ $\sf{\omega_{STP}}$= `r rel_se_stp`, __95%CI__[`r rel_se_stp_l`, `r rel_se_stp_u`]
+* __Enrichment__
+  + __McDonalds__ $\sf{\omega_{CTML}}$= `r rel_en_ctml`, __95%CI__[`r rel_en_ctml_l`, `r rel_en_ctml_u`]
+  + __McDonalds__ $\sf{\omega_{STP}}$= `r rel_en_stp`, __95%CI__[`r rel_en_stp_l`, `r rel_en_stp_u`]
+* __Relationierung__
+  + __McDonalds__ $\sf{\omega_{CTML}}$= `r rel_re_ctml`, __95%CI__[`r rel_re_ctml_l`, `r rel_re_ctml_u`]
+  + __McDonalds__ $\sf{\omega_{STP}}$= `r rel_re_stp`, __95%CI__[`r rel_re_stp_l`, `r rel_re_stp_u`]
+
+
+## first wave (efa + item selection)
+
+Let's see, if the data from item selection wave (exploratory, first data collection wave) fits the model with 4 indicators each factor.
+
+```{r data import 2, echo = T}
+# unfortunately I cannot share the data via this file
+# however you can access the data on [link pending]
+itemsel <- read_csv2(file = "../data_notshare/pilot1_2019-04-25.csv")
+
+# rename variables to fit latest labels
+itemsel <- itemsel %>%
+  mutate(tfe_1 = tfe_tfe_02,
+         tfe_2 = tfe_tfe_03,
+         tfe_3 = tfe_tfe_08,
+         tfe_4 = tfe_did_01,
+         tfe_5 = tfe_did_05,
+         sel_1 = tfo_sel_01,
+         sel_2 = tfo_sel_02,
+         sel_3 = tfo_sel_04,
+         sel_4 = tfo_sel_08,
+         sel_5 = tfo_sel_09,
+         enr_1 = tfo_enr_01,
+         enr_2 = tfo_enr_02,
+         enr_3 = tfo_enr_03,
+         enr_4 = tfo_enr_04,
+         enr_5 = tfo_enr_05,
+         rel_1 = rel_rel_02,
+         rel_2 = rel_rel_03,
+         rel_3 = rel_rel_08,
+         rel_4 = rel_rel_09)
+
+
+f4.itemsel <- ' transfer   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
+                selektion  =~ sel_1 + sel_3 + sel_4 + sel_5
+                enrichment =~ enr_1 + enr_2 + enr_3 + enr_4 
+                relation   =~ rel_1 + rel_2 + rel_3 + rel_4
+                
+                # tfe_2 ~~ 0*tfe_2  # Heywood Cases
+                # sel_5 ~~ sel_1
+                # enr_2 ~~ 0*enr_2
+                # rel_3 ~~ 0*rel_3
+             '
+
+
+# without restrictions
+fit_itemsel <- sem(f4.itemsel, 
+                   data = itemsel, 
+                   # cluster = "id",      # there is no multilevel structure in wave 1
+                   std.lv=TRUE
+                   )
+summary(fit_itemsel, fit.measures = TRUE)
+```
+
+\
+\
+
+# Experimental Study
+
+We realized two different stimuli preceding a run through the instrument each. The stimuli are descriptions of two theories from education relevant to classroom practice: Cognitive Theory of Multimedia Learning (CTML) vs. Strukturtheoretische Professionstheorie (SPT). The conditions are varied within person and randomized in their order between person. The conditions were designed to have an effect on the subscale "Transfer": The short description in the CTML-condition was written to be especially suitable to beliefs of "Transfer". In this subscale we thus expect ratings to be higher in the CTML-condition (vs. SPT-condition).  
+\
+
+For the other subscales results will be computed exploratory.
+
+## The stimuli (German)
+
+* __CTML group__: "Der „Spatial Contiguity Effect“ aus der Theorie des multimedialen Lernens, trifft Aussagen über die Kombination von Text und Bild in Lernmaterialien, beispielsweise bei der Gestaltung von Arbeitsblättern. Hierfür tragen Schroeder & Cenkci (2018) Befunde zusammen, ob Bilder und erklärender Text separat (getrennt nebeneinander) oder integriert (einzelne Textstücke direkt an relevanter Stelle im Bild) den Lernerfolg besser fördern. Das Ergebnis zeigt, dass integrierte Darstellungen einen positiven Effekt auf die Lernleistung besitzen. Dies gilt für computerbasierte Darstellungen, aber besonders für Darstellungen auf Arbeitsblättern. Wurden mobile Endgeräte verwendet, so konnte kein Unterschied in der Lernleistung zwischen den beiden Darstellungsformen festgestellt werden."
+* __SPT group__: "Im strukturtheoretischen Ansatz zur Professionalität im Lehrberuf adressiert Helsper (2004) das „Arbeitsbündnis zwischen Lehrperson und Schüler/-in“. Der Lehrerberuf ist aus dieser Perspektive durch Aufgaben und Anforderungen geprägt, die in sich widersprüchlich sind, also per se nicht aufgelöst werden können. So wird an Lehrpersonen beispielsweise die Anforderung gerichtet, sich als Person auf Lernende einzulassen und Nähe aufzubauen, andererseits müssen sie jedoch ihrer Rolle als Lehrperson gerecht werden, die z.B. bei der Notengebung eine gewisse Distanz gebietet (Nähe-Distanz-Antinomie). Beide Anforderungen vollauf zu realisieren ist nicht möglich und so scheint es für Lehrpersonen unmöglich „richtig“ zu handeln. Professionelles Handeln von Lehrpersonen äußert sich folglich darin, diese Widersprüche auszuhalten und sie sachgerecht zu bewältigen."
+
+## Frequentist Data analysis
+
+```{r exp study, error=F, warning=F, message=F, echo=T}
+valid_exp <- valid_cfa
+  
+# Ausschluss von enr_5, tfe_4, sel_2 aufgrund geringer Ladung
+exp.model <- 'level: 1
+                transfer_w   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
+                selektion_w  =~ sel_1 + sel_3 + sel_4 + sel_5
+                enrichment_w =~ enr_1 + enr_2 + enr_3 + enr_4 
+                relation_w   =~ rel_1 + rel_2 + rel_3 + rel_4
+                
+                transfer_w ~ treat
+                selektion_w ~ treat
+                enrichment_w ~ treat
+                relation_w ~ treat
+                
+              level: 2
+                transfer_b   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
+                selektion_b  =~ sel_1 + sel_3 + sel_4 + sel_5
+                enrichment_b =~ enr_1 + enr_2 + enr_3 + enr_4 
+                relation_b   =~ rel_1 + rel_2 + rel_3 + rel_4
+                
+                tfe_2 ~~ 0*tfe_2
+                sel_5 ~~ sel_1
+                sel_5 ~~ 0*sel_5       # new in this model: Haywood Case
+                enr_2 ~~ 0*enr_2
+                rel_3 ~~ 0*rel_3
+            '
+
+fit_exp <- sem(exp.model, 
+               data = valid_exp, 
+               cluster = "id"
+               )
+# options(max.print=2000)
+standardizedSolution(fit_exp)
+```
+\
+\
+
+Did the participants respond too similar between the two stimuli (failed to implement strong stimuli)? Computing ICCs:
+
+```{r exp study ICC, error=F, warning=F, message=F, echo=T}
+lavInspect(fit_exp, "icc")
+```
+
+## BF Data Analysis (with predicted values)
+
+```{r exp study bf, error=F, warning=F, message=F, echo=T}
+
+# wrangle data again without missings
+miss <- valid_exp %>%
+          select(-c(enr_5, tfe_4, sel_2)) %>%
+          filter(!complete.cases(.)) %>%
+          select(id) %>%
+          unique()
+
+valid_exp_nona <- valid_exp %>%
+  select(-c(enr_5, tfe_4, sel_2)) %>%
+  filter(!(id %in% miss$id) & id != 114 & id != 142)    # filter out cases with missings
+                                                        # in addition:
+                                                        # id 114 and 142 seem to 
+                                                        # have answered only on one 
+                                                        # stimuli completely
+
+# compute model without missings
+fit_exp_nona <- sem(exp.model,
+                    data = valid_exp_nona,
+                    cluster = "id"
+                    )
+
+# extract predicted values from lavaan model
+pred_exp <- data.frame(lavPredict(fit_exp_nona, 
+                                  method = "Bartlett",
+                                  append.data = T,
+                                  level = 1))
+
+# compute BF
+library(BayesFactor)
+ttestBF(x = pred_exp$transfer_w[pred_exp$treat == 0], y = pred_exp$transfer_w[pred_exp$treat == 1],
+        paired = T,
+        nullInterval = c(-Inf, .5)
+        )
+```
+\
+\
+
+
+# Convergent Validity
+
+* We expect "Transfer" to have a moderate positive correlation with "umsetzung"
+* We expect "Transfer" to have a negative correlation with "differenz"
+* We expect "enrichment" to have a small positive correlation with "differenz"
+* All other results will be computed exploratory
+
+## Frequentist Data Analysis
+
+```{r conv val, error=F, warning=F, message=F, echo=T, layout = "l-page"}
+
+valid_fl <- valid_l %>%
+  filter(str_sub(variable, 1, 5) == "flen_") %>%
+  spread(key = "variable", value = "value") %>%
+  select(-treat)
+
+valid_con <- left_join(valid_cfa, valid_fl, by = "id")
+
+con.model <- 'level: 1
+                transfer_w   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
+                selektion_w  =~ sel_1 + sel_3 + sel_4 + sel_5
+                enrichment_w =~ enr_1 + enr_2 + enr_3 + enr_4 
+                relation_w   =~ rel_1 + rel_2 + rel_3 + rel_4
+                
+              level: 2
+                transfer_b   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
+                selektion_b  =~ sel_1 + sel_3 + sel_4 + sel_5
+                enrichment_b =~ enr_1 + enr_2 + enr_3 + enr_4 
+                relation_b   =~ rel_1 + rel_2 + rel_3 + rel_4
+                
+                umsetzung =~ flen_UM1 + flen_UM2 + flen_UM3 + flen_UM4
+                differenz =~ flen_WI1 + flen_WI2 + flen_WI3
+                
+                tfe_2 ~~ 0*tfe_2
+                sel_5 ~~ sel_1
+                enr_2 ~~ 0*enr_2
+                rel_3 ~~ 0*rel_3
+            '
+
+fit_con <- sem(con.model, 
+               data = valid_con, 
+               cluster = "id"
+               )
+standardizedSolution(fit_con)
+```
+
+
+## BF Data Analysis (with predicted values)
+
+
+```{r conv val bf, error=F, warning=F, message=F, echo=T, layout = "l-page"}
+
+pred_con <- data.frame(lavPredict(fit_con, method = "ML", level = 2))
+
+correlationBF(y = pred_con$transfer_b, x = pred_con$umsetzung, 
+              #rscale = .3,                                   # width of prior: standard
+              nullInterval = c(-1, .3)                        # assumption was medium effect
+              )
+
+correlationBF(y = pred_con$transfer_b, x = pred_con$differenz, 
+              # rscale = .3,                                    # width of prior: standard
+              nullInterval = c(0, 1)                          # assumption was negative effect
+              )
+
+correlationBF(y = pred_con$enrichment_b, x = pred_con$differenz, 
+              # rscale = .3,                                    # width of prior: standard
+              nullInterval = c(-1, .1)                        # assumption was small effect
+              )
 ```
