@@ -43,3 +43,4 @@ rsconnect/
 
 # password in clear text so I can't share
 4_preregistration_validation/live-datastream.Rmd
+.Rproj.user
