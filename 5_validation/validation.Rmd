@@ -94,7 +94,7 @@ ggplot(valid, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübinge
 
 # Confirmatory Factor Analysis
 
-## current data
+## current data (4-5 indicators)
 
 Testing for factor structure and measurement invariance.
 We expect equal loading structure, but not equal intercept structure between treatment groups.
@@ -151,7 +151,19 @@ fit_f4 <- sem(f4.model,
               )
 summary(fit_f4, fit.measures = TRUE)    # mi <- modindices(fit_f4)
                                         # mi[order(mi$mi, decreasing = T),]
+```
 
+
+## current data (4 indicators)
+
+Ausschluss von enr_5, tfe_4, sel_2 aufgrund geringer Ladung und inhaltlich geringer Passung
+
+* tfe_4: Voraussetzung stark betont
+* enr_5: bei anderen: Differenz betont
+* sel_2: aktive Lehrerrolle
+
+
+```{r cfa2, error=F, warning=F, message=F, echo=T, layout = "l-page"}
 # Ausschluss von enr_5, tfe_4, sel_2 aufgrund geringer Ladung und inhaltlich geringer Passung
 # tfe_4: Voraussetzung stark betont
 # enr_5: bei anderen: Differenz betont
@@ -182,44 +194,18 @@ fit_f4.2 <- sem(f4.model2,
 summary(fit_f4.2, fit.measures = TRUE)
 
 
-
-# # test for measurment invariance: model without restrictions on loadings
-# f4.model2.2 <- 'level: 1
-#                 transfer_w   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
-#                 selektion_w  =~ sel_1 + sel_3 + sel_4 + sel_5
-#                 enrichment_w =~ enr_1 + enr_2 + enr_3 + enr_4 
-#                 relation_w   =~ rel_1 + rel_2 + rel_3 + rel_4
-#                 
-#               level: 2
-#                 transfer_b   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
-#                 selektion_b  =~ sel_1 + sel_3 + sel_4 + sel_5
-#                 enrichment_b =~ enr_1 + enr_2 + enr_3 + enr_4 
-#                 relation_b   =~ rel_1 + rel_2 + rel_3 + rel_4
-#                 
-#                 tfe_2 ~~ 0*tfe_2
-#                 sel_5 ~~ sel_1
-#                 enr_2 ~~ 0*enr_2
-#                 rel_3 ~~ 0*rel_3
-#              '
-# 
-# fit_f4.2.2 <- sem(f4.model2.2, 
-#               data = valid_cfa, 
-#               cluster = "id",
-#               std.lv=TRUE
-#               )
-# 
-# anova(fit_f4.2, fit_f4.2.2)
-
-
-
-
-
 # # test for measurement invariance | PENDING
 # library(semTools)
 # mi_f4 <- measEq.syntax(configural.model = f4.model2,      # ERROR SAMUEL
 #                        data = valid_cfa,
 #                        group = "treat",
 #                        cluster = "id")
+```
+
+### Standardized Solution
+
+```{r cfa3, error=F, warning=F, message=F, echo=T, layout = "l-page"}
+standardizedSolution(fit_f4.2)
 ```
 
 
