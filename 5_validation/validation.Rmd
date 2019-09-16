@@ -103,7 +103,7 @@ We expect equal loading structure, but not equal intercept structure between tre
 ## wrangle data ##
 valid_l <- valid %>%
   mutate(id = 1:length(.$session)) %>%                                                 # create ID
-  select("flen_AN1":"rel_4_sr", "id") %>%
+  select("flen_AN1":"rel_4_sr", "id", "semester") %>%
   gather(key = "variable", value = "value", na.rm = T, 1:51) %>%                       # create long data set
   mutate(treat = case_when(                                                            # create treatment variable
                     str_sub(variable, -3, -1) ==  "_st" ~ "transfer",
@@ -536,4 +536,38 @@ correlationBF(y = pred_con$enrichment_b, x = pred_con$differenz,
               # rscale = .3,                                    # width of prior: standard
               nullInterval = c(-1, .1)                        # assumption was small effect
               )
+```
+\
+\
+
+
+# Exploratory Analyses
+```{r expl, error=F, warning=F, message=F, echo=T, layout = "l-page"}
+f4.model2_sem <- 'level: 1
+                transfer_w   =~ t1*tfe_1 + t2*tfe_2 + t3*tfe_3 + t5*tfe_5
+                selektion_w  =~ s1*sel_1 + s3*sel_3 + s4*sel_4 + s5*sel_5
+                enrichment_w =~ e1*enr_1 + e2*enr_2 + e3*enr_3 + e4*enr_4 
+                relation_w   =~ r1*rel_1 + r2*rel_2 + r3*rel_3 + r4*rel_4
+                
+              level: 2
+                transfer_b   =~ t1*tfe_1 + t2*tfe_2 + t3*tfe_3 + t5*tfe_5
+                selektion_b  =~ s1*sel_1 + s3*sel_3 + s4*sel_4 + s5*sel_5
+                enrichment_b =~ e1*enr_1 + e2*enr_2 + e3*enr_3 + e4*enr_4 
+                relation_b   =~ r1*rel_1 + r2*rel_2 + r3*rel_3 + r4*rel_4
+                
+                tfe_2 ~~ 0*tfe_2
+                sel_5 ~~ sel_1
+                enr_2 ~~ 0*enr_2
+                rel_3 ~~ 0*rel_3
+                
+                relation_b ~ semester
+                transfer_b ~ semester
+             '
+
+fit_sem <- sem(f4.model2_sem, 
+              data = valid_cfa, 
+              cluster = "id",
+              std.lv=TRUE
+              )
+summary(fit_sem, fit.measures = TRUE)
 ```
