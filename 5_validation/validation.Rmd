@@ -186,6 +186,8 @@ f4.model2 <- 'level: 1
                 rel_3 ~~ 0*rel_3
              '
 
+
+
 fit_f4.2 <- sem(f4.model2, 
               data = valid_cfa, 
               cluster = "id",
