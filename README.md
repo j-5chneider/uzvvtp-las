@@ -1,6 +1,6 @@
-# Project uzvvtp-las
+# Project INVERT
 
-In project uzvvtp-las [Jürgen Schneider](https://uni-tuebingen.de/de/28915) (University of Tübingen) and [Ruben Kulcsar](http://wipaed.jku.at/wip-team/ruben-kulcsar/) (University of Linz) create a questionnaire to measure pre-service teachers' beliefs on the relation of theory and practice.  
+In project INVERT [Jürgen Schneider](https://uni-tuebingen.de/de/28915) (University of Tübingen) and [Ruben Kulcsar](http://wipaed.jku.at/wip-team/ruben-kulcsar/) (University of Linz) create a questionnaire to measure pre-service teachers' beliefs on the relation of theory and practice.  
 The latest milestones and timeline can be found here on [OSF](https://osf.io/p7jwt/) or [github](https://github.com/j-5chneider/uzvvtp-las/blob/master/2_questionnaire%2Bmanual%2Bbriefingscript/timeline.html). You would need to download the HTML file as OSF and github don't display it.
   
 
