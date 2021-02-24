@@ -73,17 +73,6 @@ ggplot(itemsel, aes(x = as.factor(semester))) +
 __Standort__
 
 ```{r data cleaning 3, echo = T}
-ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Stuttgart", "Tübingen", "Vechta")))) +
-  geom_bar() +
-  labs(title = "Count of participants by Standort") +
-  geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
-
-
-# Standort: Two cases from Tübingen that checked Stuttgart
-# However Stuttgart was not part of the sample and the time and date show the cases come from Tübingen
-itemsel <- itemsel %>%
-  mutate(standort = ifelse(standort == 4, 5, standort))
-
 ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübingen", "Vechta")))) +
   geom_bar() +
   labs(title = "Count of participants by Standort") +
@@ -172,7 +161,7 @@ rm(fach_freq)
 ```{r item names, layout = "l-screen-inset", echo = T}
 
 # importing item labels and codes
-items <- read.csv("../data/items.csv", sep = ";")
+items <- rio::import("https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/items.csv")
 
 library(kableExtra)
 
@@ -180,7 +169,7 @@ library(kableExtra)
 items %>%
   kable() %>%
   column_spec(1:2, bold = T) %>%
-  collapse_rows(columns = 1:2, valign = "middle") %>%
+  kableExtra::collapse_rows(columns = 1:2, valign = "middle") %>%
   row_spec(0, extra_css = "border-bottom: 2px solid #8F8F95") %>%
   row_spec(c(1:65), extra_css = "border-bottom: 1px solid #B9B8BC")
   
