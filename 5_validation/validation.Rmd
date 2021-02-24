@@ -41,10 +41,11 @@ Preregistration dates after the data collection, last modification was - however
 
 # data import
 ```{r data import, echo = T}
-# get data from the data folder
 library(tidyverse)
 library(lavaanPlot)
-valid <- read_csv2(file = "../data/pilot2.csv")
+library(rio)
+
+valid <- rio::import("https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/pilot2.csv")
 ```
 
 <aside>
@@ -63,7 +64,7 @@ see the questionnaire [here](https://showcase2.formr.org/)
 
 ```{r data cleaning 1, echo = T}
 valid <- valid %>%
-  filter(!is.na(lehramt))                 # only include students that completed the questionnaire
+  dplyr::filter(!is.na(lehramt))                 # only include students that completed the questionnaire
 ```
 
 ## unreasonable values/ sample description
@@ -104,7 +105,7 @@ We expect equal loading structure, but not equal intercept structure between tre
 valid_l <- valid %>%
   mutate(id = 1:length(.$session),                                          # create ID
          tc = ifelse(tc_sr == 1 & tc_st == 2, 1,0)) %>%                     # create treatment check variable
-  select("flen_AN1":"rel_4_sr", "tc", "id", "semester", -"tc_sr", -"tc_st") %>%
+  dplyr::select("flen_AN1":"rel_4_sr", "tc", "id", "semester", -"tc_sr", -"tc_st") %>%
   gather(key = "variable", value = "value", na.rm = T, 1:50) %>%                       # create long data set
   mutate(treat = case_when(                                                            # create treatment variable
                     str_sub(variable, -3, -1) ==  "_st" ~ "transfer",
@@ -119,7 +120,7 @@ valid_l <- valid %>%
   )
 
 valid_cfa <- valid_l %>%
-  filter(!is.na(treat)) %>%
+  dplyr::filter(!is.na(treat)) %>%
   spread(key = "variable", value = "value") %>%
   mutate(treat = case_when(
                     treat == "relationierung" ~ 1,
@@ -236,16 +237,16 @@ standardizedSolution(fit_f4.2)
 
 # Transfer
 rel_data4.1.0 <- valid_cfa %>%
-  filter(treat == 0) %>%
-  select("tfe_1" , "tfe_2" , "tfe_3" , "tfe_5") 
+  dplyr::filter(treat == 0) %>%
+  dplyr::select("tfe_1" , "tfe_2" , "tfe_3" , "tfe_5") 
 
 rel_tr_ctml <- MBESS::ci.reliability(rel_data4.1.0)$est
 rel_tr_ctml_l <- MBESS::ci.reliability(rel_data4.1.0)$ci.lower
 rel_tr_ctml_u <- MBESS::ci.reliability(rel_data4.1.0)$ci.upper
 
 rel_data4.1.1 <- valid_cfa %>%
-  filter(treat == 1) %>%
-  select("tfe_1" , "tfe_2" , "tfe_3" , "tfe_5")
+  dplyr::filter(treat == 1) %>%
+  dplyr::select("tfe_1" , "tfe_2" , "tfe_3" , "tfe_5")
 
 rel_tr_stp <- MBESS::ci.reliability(rel_data4.1.1)$est
 rel_tr_stp_l <- MBESS::ci.reliability(rel_data4.1.1)$ci.lower
@@ -253,16 +254,16 @@ rel_tr_stp_u <- MBESS::ci.reliability(rel_data4.1.1)$ci.upper
 
 # Selektion
 rel_data4.2.0 <- valid_cfa %>%
-  filter(treat == 0) %>%
-  select("sel_1" , "sel_3" , "sel_4" , "sel_5") 
+  dplyr::filter(treat == 0) %>%
+  dplyr::select("sel_1" , "sel_3" , "sel_4" , "sel_5") 
 
 rel_se_ctml <- MBESS::ci.reliability(rel_data4.2.0)$est
 rel_se_ctml_l <- MBESS::ci.reliability(rel_data4.2.0)$ci.lower
 rel_se_ctml_u <- MBESS::ci.reliability(rel_data4.2.0)$ci.upper
 
 rel_data4.2.1 <- valid_cfa %>%
-  filter(treat == 1) %>%
-  select("sel_1" , "sel_3" , "sel_4" , "sel_5") 
+  dplyr::filter(treat == 1) %>%
+  dplyr::select("sel_1" , "sel_3" , "sel_4" , "sel_5") 
 
 rel_se_stp <- MBESS::ci.reliability(rel_data4.2.1)$est
 rel_se_stp_l <- MBESS::ci.reliability(rel_data4.2.1)$ci.lower
@@ -271,16 +272,16 @@ rel_se_stp_u <- MBESS::ci.reliability(rel_data4.2.1)$ci.upper
 
 # Enrichment
 rel_data4.3.0 <- valid_cfa %>%
-  filter(treat == 0) %>%
-  select("enr_1" , "enr_2" , "enr_3" , "enr_4") 
+  dplyr::filter(treat == 0) %>%
+  dplyr::select("enr_1" , "enr_2" , "enr_3" , "enr_4") 
 
 rel_en_ctml <- MBESS::ci.reliability(rel_data4.3.0)$est
 rel_en_ctml_l <- MBESS::ci.reliability(rel_data4.3.0)$ci.lower
 rel_en_ctml_u <- MBESS::ci.reliability(rel_data4.3.0)$ci.upper
 
 rel_data4.3.1 <- valid_cfa %>%
-  filter(treat == 1) %>%
-  select("enr_1" , "enr_2" , "enr_3" , "enr_4") 
+  dplyr::filter(treat == 1) %>%
+  dplyr::select("enr_1" , "enr_2" , "enr_3" , "enr_4") 
 
 rel_en_stp <- MBESS::ci.reliability(rel_data4.3.1)$est
 rel_en_stp_l <- MBESS::ci.reliability(rel_data4.3.1)$ci.lower
@@ -288,16 +289,16 @@ rel_en_stp_u <- MBESS::ci.reliability(rel_data4.3.1)$ci.upper
 
 # Relationierung
 rel_data4.4.0 <- valid_cfa %>%
-  filter(treat == 0) %>%
-  select("rel_1" , "rel_2" , "rel_3" , "rel_4") 
+  dplyr::filter(treat == 0) %>%
+  dplyr::select("rel_1" , "rel_2" , "rel_3" , "rel_4") 
 
 rel_re_ctml <- MBESS::ci.reliability(rel_data4.4.0)$est
 rel_re_ctml_l <- MBESS::ci.reliability(rel_data4.4.0)$ci.lower
 rel_re_ctml_u <- MBESS::ci.reliability(rel_data4.4.0)$ci.upper
 
 rel_data4.4.1 <- valid_cfa %>%
-  filter(treat == 1) %>%
-  select("rel_1" , "rel_2" , "rel_3" , "rel_4") 
+  dplyr::filter(treat == 1) %>%
+  dplyr::select("rel_1" , "rel_2" , "rel_3" , "rel_4") 
 
 rel_re_stp <- MBESS::ci.reliability(rel_data4.4.1)$est
 rel_re_stp_l <- MBESS::ci.reliability(rel_data4.4.1)$ci.lower
@@ -456,14 +457,14 @@ lavInspect(fit_exp, "icc")
 
 # wrangle data again without missings
 miss <- valid_exp %>%
-          select(-c(enr_5, tfe_4, sel_2)) %>%
-          filter(!complete.cases(.)) %>%
-          select(id) %>%
+          dplyr::select(-c(enr_5, tfe_4, sel_2)) %>%
+          dplyr::filter(!complete.cases(.)) %>%
+          dplyr::select(id) %>%
           unique()
 
 valid_exp_nona <- valid_exp %>%
-  select(-c(enr_5, tfe_4, sel_2)) %>%
-  filter(!(id %in% miss$id) & id != 114 & id != 142)    # filter out cases with missings
+  dplyr::select(-c(enr_5, tfe_4, sel_2)) %>%
+  dplyr::filter(!(id %in% miss$id) & id != 114 & id != 142)    # filter out cases with missings
                                                         # in addition:
                                                         # id 114 and 142 seem to 
                                                         # have answered only on one 
@@ -505,9 +506,9 @@ ttestBF(x = pred_exp$transfer_w[pred_exp$treat == 1],
 ```{r conv val, error=F, warning=F, message=F, echo=T, layout = "l-page"}
 
 valid_fl <- valid_l %>%
-  filter(str_sub(variable, 1, 5) == "flen_") %>%
+  dplyr::filter(str_sub(variable, 1, 5) == "flen_") %>%
   spread(key = "variable", value = "value") %>%
-  select(-treat)
+  dplyr::select(-treat)
 
 valid_con <- left_join(valid_cfa, valid_fl, by = "id")
 

@@ -27,10 +27,9 @@ options(scipen=1, digits=3)
 
 # data import
 ```{r data import, echo = T}
-# unfortunately I cannot share the data via this file
-# however you can access the data on [link pending]
 library(tidyverse)
-itemsel <- read_csv2(file = "../data/pilot1.csv")
+library(rio)
+itemsel <- rio::import("https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/pilot1.csv")
 ```
 
 <aside>
