@@ -26,7 +26,7 @@ options(scipen=1, digits=3)
 
 
 # data import
-```{r data import, echo = T}
+```{r data import, echo = T, cache=F}
 library(tidyverse)
 library(rio)
 itemsel <- rio::import("https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/pilot1.csv")
@@ -264,7 +264,7 @@ __factors with ordered items ($\lambda$>.4) and item labels__
 rownames(items) <- items$Code
 
 items <- items %>%
-  select(Item.Label)
+  dplyr::select(`Item Label`)
 
 # sort items according to factor and loading
 fa3_tab <- fa.lookup(f = fa3, dictionary = items, cut = .4)
@@ -392,7 +392,7 @@ items_4fact <- items %>%
                 rownames(items) %in% names(rel_data4.3) | 
                 rownames(items) %in% names(rel_data4.4) ) %>%
   mutate(Skala = c(rep("Transfer (Transfer & Didaktik)", 5), rep("Selektion", 5), rep("Enrichment", 5), rep("Relationierung", 4))) %>%
-  select(Skala, Item.Label)
+  select(Skala, `Item Label`)
 
 kable(items_4fact) %>%
   row_spec(6:10, background = "#c4fdff") %>%
