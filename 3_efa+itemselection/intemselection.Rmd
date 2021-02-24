@@ -73,6 +73,17 @@ ggplot(itemsel, aes(x = as.factor(semester))) +
 __Standort__
 
 ```{r data cleaning 3, echo = T}
+ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Stuttgart", "Tübingen", "Vechta")))) +
+  geom_bar() +
+  labs(title = "Count of participants by Standort") +
+  geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
+
+
+# Standort: Two cases from Tübingen that checked Stuttgart
+# However Stuttgart was not part of the sample and the time and date show the cases come from Tübingen
+itemsel <- itemsel %>%
+  mutate(standort = ifelse(standort == 4, 5, standort))
+
 ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübingen", "Vechta")))) +
   geom_bar() +
   labs(title = "Count of participants by Standort") +
