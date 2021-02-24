@@ -30,7 +30,7 @@ options(scipen=1, digits=3)
 # unfortunately I cannot share the data via this file
 # however you can access the data on [link pending]
 library(tidyverse)
-itemsel <- read_csv2(file = "../data_notshare/pilot1_2019-04-25.csv")
+itemsel <- read_csv2(file = "../data/pilot1.csv")
 ```
 
 <aside>

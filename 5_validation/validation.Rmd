@@ -41,11 +41,10 @@ Preregistration dates after the data collection, last modification was - however
 
 # data import
 ```{r data import, echo = T}
-# unfortunately I cannot share the data via this file
-# however you can access the data on [link pending]
+# get data from the data folder
 library(tidyverse)
 library(lavaanPlot)
-valid <- read_csv2(file = "../data_notshare/pilot2_2019-06-25.csv")
+valid <- read_csv2(file = "../data/pilot2.csv")
 ```
 
 <aside>
