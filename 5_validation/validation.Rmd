@@ -327,7 +327,7 @@ Let's see, if the data from item selection wave (exploratory, first data collect
 ```{r data import 2, echo = T}
 # unfortunately I cannot share the data via this file
 # however you can access the data on [link pending]
-itemsel <- read_csv2(file = "../data_notshare/pilot1_2019-04-25.csv")
+itemsel <- read_csv2(file = "https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/pilot1.csv")
 
 # rename variables to fit latest labels
 itemsel <- itemsel %>%
