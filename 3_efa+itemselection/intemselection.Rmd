@@ -410,8 +410,8 @@ Several items of the instrument will be reformulated due to possible two-dimensi
 In column "itemlabel_re", deleted words are marked by strikethrough, newly added words are italicised.  
 New item labels can be found in the column "itemlabel".
 
-```{r items reformulate, layout="l-page", echo = T}
-items_4f <- read.csv("../data/items_4f.csv", sep = ";")
+```{r items reformulate, layout="l-page", echo = T, cache=F}
+items_4f <- read.csv("https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/items_4f.csv", sep = ";")
 
 kable(items_4f) %>%
   row_spec(6:10, background = "#c4fdff") %>%

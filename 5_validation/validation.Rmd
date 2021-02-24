@@ -42,7 +42,7 @@ Preregistration dates after the data collection, last modification was - however
 # data import
 ```{r data import, echo = T, cache=F}
 library(tidyverse)
-library(lavaanPlot)
+# library(lavaanPlot)
 library(rio)
 
 valid <- rio::import("https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/pilot2.csv")
@@ -164,12 +164,13 @@ fit_f4 <- sem(f4.model,
 summary(fit_f4, fit.measures = TRUE)    # mi <- modindices(fit_f4)
                                         # mi[order(mi$mi, decreasing = T),]
 
-lavaanPlot(model = fit_f4, 
-          node_options = list(shape = "box", fontname = "Helvetica"), 
-          edge_options = list(color = "grey"), 
-          coefs = TRUE, 
-          covs = TRUE,
-          stand = TRUE)
+# lavaanPlot(model = fit_f4, 
+#           node_options = list(shape = "box", fontname = "Helvetica"), 
+#           edge_options = list(color = "grey"), 
+#           coefs = TRUE#, 
+#           # covs = TRUE#,
+#           # stand = TRUE
+#           )
 ```
 
 
@@ -214,12 +215,12 @@ fit_f4.2 <- sem(f4.model2,
               )
 summary(fit_f4.2, fit.measures = TRUE)
 
-lavaanPlot(model = fit_f4.2, 
-          node_options = list(shape = "box", fontname = "Helvetica"), 
-          edge_options = list(color = "grey"), 
-          coefs = TRUE, 
-          covs = TRUE,
-          stand = TRUE)
+# lavaanPlot(model = fit_f4.2, 
+#           node_options = list(shape = "box", fontname = "Helvetica"), 
+#           edge_options = list(color = "grey"), 
+#           coefs = TRUE, 
+#           covs = TRUE,
+#           stand = TRUE)
 
 ```
 
@@ -371,12 +372,12 @@ fit_itemsel <- sem(f4.itemsel,
                    )
 summary(fit_itemsel, fit.measures = TRUE)
 
-lavaanPlot(model = fit_itemsel, 
-          node_options = list(shape = "box", fontname = "Helvetica"), 
-          edge_options = list(color = "grey"), 
-          coefs = TRUE, 
-          covs = TRUE,
-          stand = TRUE)
+# lavaanPlot(model = fit_itemsel, 
+#           node_options = list(shape = "box", fontname = "Helvetica"), 
+#           edge_options = list(color = "grey"), 
+#           coefs = TRUE, 
+#           covs = TRUE,
+#           stand = TRUE)
 
 ```
 
@@ -432,12 +433,12 @@ fit_exp <- sem(exp.model,
                cluster = "id"
                )
 
-lavaanPlot(model = fit_exp, 
-          node_options = list(shape = "box", fontname = "Helvetica"), 
-          edge_options = list(color = "grey"), 
-          coefs = TRUE, 
-          covs = TRUE,
-          stand = TRUE)
+# lavaanPlot(model = fit_exp, 
+#           node_options = list(shape = "box", fontname = "Helvetica"), 
+#           edge_options = list(color = "grey"), 
+#           coefs = TRUE, 
+#           covs = TRUE,
+#           stand = TRUE)
 
 # options(max.print=2000)
 standardizedSolution(fit_exp)
