@@ -1,7 +1,6 @@
 ---
-title: "validation"
-description: |
-  Erhebungsinstrument „Überzeugungen zum Verhältnis von Theorie und Praxis von Lehramtsstudierenden“
+title: "Validation"
+subtitle: "Erhebungsinstrument „Überzeugungen zum Verhältnis von Theorie und Praxis von Lehramtsstudierenden“"
 author:
   - name: Jürgen Schneider 
     url: https://orcid.org/0000-0002-3772-4198
@@ -22,55 +21,77 @@ author:
     affiliation_url: https://www.uni-vechta.de/universitaet/personenverzeichnis/kathrin-rheinlaender/
 date: "`r Sys.Date()`"
 output: 
-  radix::radix_article:
-    toc: true
-    toc_depth: 2
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_float:
+      collapsed: false
+    code_folding: hide
 editor_options: 
   chunk_output_type: console
+css: style.css
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+# knitr::opts_chunk$set(echo = FALSE)
 options(scipen=1, digits=3)
+
+knitr::opts_chunk$set(
+  echo=TRUE, 
+  eval=TRUE,
+  warning=FALSE,
+  message=FALSE,
+  tidy=TRUE,
+  R.options=list(width=80),
+  tidy.opts=list(width.cutoff=80), # For code
+  # width = 180,
+  # comment="##",
+  background="grey")  # For output
+options(cli.width = 60, width=60)  # For tidyverse loading messages
 ```
 
-# preregistration
+
+\
+\
+
+[![](../webs/osf0.png)](https://osf.io/jh6rx/)[&nbsp; Link to OSF-Project](https://osf.io/jh6rx/)
+<br />
+Questionnaire realized with [formr](https://formr.org/)
+<br />
+see the questionnaire [here](https://showcase2.formr.org/)
+
+\
+
+
+# Preregistration
 
 Available here: https://osf.io/2jw7m  
 Preregistration dates after the data collection, last modification was - however - before data collection. I simply clicked on "save" and not on "register" at the time.
 
-# data import
+# Data import & cleaning
+**Import**
 ```{r data import, echo = T, cache=F}
 library(tidyverse)
-# library(lavaanPlot)
+library(psych)
 library(rio)
+library(lavaanPlot)
+library(BayesFactor)
+library(lavaan)
+library(knitr)
 
 valid <- rio::import("https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/pilot2.csv")
 ```
 
-<aside>
-[![](../webs/osf0.png)](https://osf.io/jh6rx/)[&nbsp; Link to OSF-Project](https://osf.io/jh6rx/)
-<br /><br />
-Questionnaire realized with [formr](https://formr.org/)
-<br /><br />
-see the questionnaire [here](https://showcase2.formr.org/)
-</aside>
-
-
-# data cleaning
-
-## delete empty rows/ rows of test run
-
-
+**Delete empty rows/ rows of test run**
 ```{r data cleaning 1, echo = T}
 valid <- valid %>%
   dplyr::filter(!is.na(lehramt))                 # only include students that completed the questionnaire
 ```
 
-## unreasonable values/ sample description
-(e.g. out of range data)
+# Sample description {.tabset}
+and editing/deleting unreasonable values (e.g. out of range data)
 
-__Semester__
+## Semester
 
 ```{r data cleaning 2, echo = T}
 # semester: no unreasonable values
@@ -83,7 +104,7 @@ ggplot(valid, aes(x = as.factor(semester))) +
 ```
 \
 
-__Standort__
+## Standort
 
 ```{r data cleaning 3, echo = T}
 ggplot(valid, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübingen", "Vechta")))) +  # 1= Flensburg, 2= Linz, 3= München, 4= Stuttgart, 5= Tübingen, 6= Vechta, 7= andere
@@ -93,14 +114,26 @@ ggplot(valid, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübinge
   geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
 ```
 
-# Confirmatory Factor Analysis
+## Subject
+```{r data cleaning 4, echo = T}
 
-## current data (4-5 indicators)
+fach_freq <- data.frame(table(valid$fach))
+names(fach_freq) <- c("Combination of Subjects", "Frequency")
+kable(fach_freq, format = "html")
+```
+
+
+\
+\
+
+# Results FF2: CFA {.tabset}
+
+## 4-factor-model (4-5 indicators)
 
 Testing for factor structure and measurement invariance.
 We expect equal loading structure, but not equal intercept structure between treatment groups.
 
-```{r cfa, error=F, warning=F, message=F, echo=T, layout = "l-page"}
+```{r cfa, error=F, warning=F, message=F, echo=T, out.width = "1000px"}
 ## wrangle data ##
 valid_l <- valid %>%
   mutate(id = 1:length(.$session),                                          # create ID
@@ -138,7 +171,6 @@ valid_cfa <- left_join(valid_cfa, addtc, by="id")
 
 
 # the model
-library(lavaan)
 f4.model <- ' level: 1
                 transfer_w   =~ t1*tfe_1 + t2*tfe_2 + t3*tfe_3 + t4*tfe_4 + t5*tfe_5
                 selektion_w  =~ s1*sel_1 + s2*sel_2 + s3*sel_3 + s4*sel_4 + s5*sel_5
@@ -161,20 +193,20 @@ fit_f4 <- sem(f4.model,
               data = valid_cfa, 
               cluster = "id"
               )
-summary(fit_f4, fit.measures = TRUE)    # mi <- modindices(fit_f4)
-                                        # mi[order(mi$mi, decreasing = T),]
 
-# lavaanPlot(model = fit_f4, 
-#           node_options = list(shape = "box", fontname = "Helvetica"), 
-#           edge_options = list(color = "grey"), 
-#           coefs = TRUE#, 
-#           # covs = TRUE#,
-#           # stand = TRUE
-#           )
+lavaanPlot(model = fit_f4,
+           node_options = list(shape = "box", fontname = "Helvetica"),
+           edge_options = list(color = "grey"),
+           coefs = TRUE)
+
+summary(fit_f4, fit.measures = TRUE)    
+
+
 ```
+\
+\
 
-
-## current data (4 indicators)
+## 4-factor-model (4 indicators)
 
 Ausschluss von enr_5, tfe_4, sel_2 aufgrund geringer Ladung und inhaltlich geringer Passung
 
@@ -183,7 +215,7 @@ Ausschluss von enr_5, tfe_4, sel_2 aufgrund geringer Ladung und inhaltlich gerin
 * sel_2: aktive Lehrerrolle
 
 
-```{r cfa2, error=F, warning=F, message=F, echo=T, layout = "l-page"}
+```{r cfa2, error=F, warning=F, message=F, echo=T, out.width = "1000px"}
 # Ausschluss von enr_5, tfe_4, sel_2 aufgrund geringer Ladung und inhaltlich geringer Passung
 # tfe_4: Voraussetzung stark betont
 # enr_5: bei anderen: Differenz betont
@@ -213,15 +245,13 @@ fit_f4.2 <- sem(f4.model2,
               cluster = "id",
               std.lv=TRUE
               )
+
+lavaanPlot(model = fit_f4.2,
+           node_options = list(shape = "box", fontname = "Helvetica"),
+           edge_options = list(color = "grey"),
+           coefs = TRUE)
+
 summary(fit_f4.2, fit.measures = TRUE)
-
-# lavaanPlot(model = fit_f4.2, 
-#           node_options = list(shape = "box", fontname = "Helvetica"), 
-#           edge_options = list(color = "grey"), 
-#           coefs = TRUE, 
-#           covs = TRUE,
-#           stand = TRUE)
-
 ```
 
 ### Standardized Solution
@@ -229,9 +259,10 @@ summary(fit_f4.2, fit.measures = TRUE)
 ```{r cfa3, error=F, warning=F, message=F, echo=T, layout = "l-page"}
 standardizedSolution(fit_f4.2)
 ```
+\
+\
 
-
-## reliability
+## Reliability
 
 ```{r omega, echo = T}
 ## McDonalds Omega for these factors ##
@@ -319,12 +350,14 @@ rel_re_stp_u <- MBESS::ci.reliability(rel_data4.4.1)$ci.upper
   + __McDonalds__ $\sf{\omega_{CTML}}$= `r rel_re_ctml`, __95%CI__[`r rel_re_ctml_l`, `r rel_re_ctml_u`]
   + __McDonalds__ $\sf{\omega_{STP}}$= `r rel_re_stp`, __95%CI__[`r rel_re_stp_l`, `r rel_re_stp_u`]
 
+\
+\
 
-## first wave (efa + item selection)
+## Check 4 indicators with Study 1 data
 
 Let's see, if the data from item selection wave (exploratory, first data collection wave) fits the model with 4 indicators each factor.
 
-```{r data import 2, echo = T}
+```{r data import 2, echo = T, out.width = "1000px"}
 # unfortunately I cannot share the data via this file
 # however you can access the data on [link pending]
 itemsel <- read_csv2(file = "https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/pilot1.csv")
@@ -370,21 +403,22 @@ fit_itemsel <- sem(f4.itemsel,
                    # cluster = "id",      # there is no multilevel structure in wave 1
                    std.lv=TRUE
                    )
+
+lavaanPlot(model = fit_itemsel,
+          node_options = list(shape = "box", fontname = "Helvetica"),
+          edge_options = list(color = "grey"),
+          coefs = TRUE)
+
 summary(fit_itemsel, fit.measures = TRUE)
 
-# lavaanPlot(model = fit_itemsel, 
-#           node_options = list(shape = "box", fontname = "Helvetica"), 
-#           edge_options = list(color = "grey"), 
-#           coefs = TRUE, 
-#           covs = TRUE,
-#           stand = TRUE)
+
 
 ```
 
 \
 \
 
-# Experimental Study
+# Results FF3: Experimental Study {.tabset}
 
 We realized two different stimuli preceding a run through the instrument each. The stimuli are descriptions of two theories from education relevant to classroom practice: Cognitive Theory of Multimedia Learning (CTML) vs. Strukturtheoretische Professionstheorie (SPT). The conditions are varied within person and randomized in their order between person. The conditions were designed to have an effect on the subscale "Transfer": The short description in the CTML-condition was written to be especially suitable to beliefs of "Transfer". In this subscale we thus expect ratings to be higher in the CTML-condition (vs. SPT-condition).  
 \
@@ -396,9 +430,12 @@ For the other subscales results will be computed exploratory.
 * __CTML group__: "Der „Spatial Contiguity Effect“ aus der Theorie des multimedialen Lernens, trifft Aussagen über die Kombination von Text und Bild in Lernmaterialien, beispielsweise bei der Gestaltung von Arbeitsblättern. Hierfür tragen Schroeder & Cenkci (2018) Befunde zusammen, ob Bilder und erklärender Text separat (getrennt nebeneinander) oder integriert (einzelne Textstücke direkt an relevanter Stelle im Bild) den Lernerfolg besser fördern. Das Ergebnis zeigt, dass integrierte Darstellungen einen positiven Effekt auf die Lernleistung besitzen. Dies gilt für computerbasierte Darstellungen, aber besonders für Darstellungen auf Arbeitsblättern. Wurden mobile Endgeräte verwendet, so konnte kein Unterschied in der Lernleistung zwischen den beiden Darstellungsformen festgestellt werden."
 * __SPT group__: "Im strukturtheoretischen Ansatz zur Professionalität im Lehrberuf adressiert Helsper (2004) das „Arbeitsbündnis zwischen Lehrperson und Schüler/-in“. Der Lehrerberuf ist aus dieser Perspektive durch Aufgaben und Anforderungen geprägt, die in sich widersprüchlich sind, also per se nicht aufgelöst werden können. So wird an Lehrpersonen beispielsweise die Anforderung gerichtet, sich als Person auf Lernende einzulassen und Nähe aufzubauen, andererseits müssen sie jedoch ihrer Rolle als Lehrperson gerecht werden, die z.B. bei der Notengebung eine gewisse Distanz gebietet (Nähe-Distanz-Antinomie). Beide Anforderungen vollauf zu realisieren ist nicht möglich und so scheint es für Lehrpersonen unmöglich „richtig“ zu handeln. Professionelles Handeln von Lehrpersonen äußert sich folglich darin, diese Widersprüche auszuhalten und sie sachgerecht zu bewältigen."
 
+\
+\
+
 ## Frequentist Data analysis
 
-```{r exp study, error=F, warning=F, message=F, echo=T}
+```{r exp study, error=F, warning=F, message=F, echo=T, out.width = "1000px"}
 valid_exp <- valid_cfa %>%
   dplyr::filter(tc == 1)    # only include participants who 
                             # answered the treatment check correctly
@@ -433,12 +470,10 @@ fit_exp <- sem(exp.model,
                cluster = "id"
                )
 
-# lavaanPlot(model = fit_exp, 
-#           node_options = list(shape = "box", fontname = "Helvetica"), 
-#           edge_options = list(color = "grey"), 
-#           coefs = TRUE, 
-#           covs = TRUE,
-#           stand = TRUE)
+lavaanPlot(model = fit_exp,
+          node_options = list(shape = "box", fontname = "Helvetica"),
+          edge_options = list(color = "grey"),
+          coefs = TRUE)
 
 # options(max.print=2000)
 standardizedSolution(fit_exp)
@@ -451,6 +486,8 @@ Did the participants respond too similar between the two stimuli (failed to impl
 ```{r exp study ICC, error=F, warning=F, message=F, echo=T}
 lavInspect(fit_exp, "icc")
 ```
+\
+\
 
 ## BF Data Analysis (with predicted values)
 
@@ -484,7 +521,6 @@ pred_exp <- data.frame(lavPredict(fit_exp_nona,
                                   level = 1))
 
 # compute BF
-library(BayesFactor)
 ttestBF(x = pred_exp$transfer_w[pred_exp$treat == 1], 
         y = pred_exp$transfer_w[pred_exp$treat == 0],
         paired = T,
@@ -495,24 +531,45 @@ ttestBF(x = pred_exp$transfer_w[pred_exp$treat == 1],
 \
 
 
-# Convergent Validity
+# Results FF4: Convergent Validity {.tabset}
 
 * We expect "Transfer" to have a moderate positive correlation with "umsetzung"
 * We expect "Transfer" to have a negative correlation with "differenz"
 * We expect "enrichment" to have a small positive correlation with "differenz"
 * All other results will be computed exploratory
 
-## Frequentist Data Analysis
+## Reliability of Umsetzbarkeit and Unabhängigkeit
 
-```{r conv val, error=F, warning=F, message=F, echo=T, layout = "l-page"}
-
+```{r, error=F, warning=F, message=F, echo=T}
 valid_fl <- valid_l %>%
   dplyr::filter(str_sub(variable, 1, 5) == "flen_") %>%
   spread(key = "variable", value = "value") %>%
-  dplyr::select(-treat)
+  dplyr::select(-treat, -semester)
 
 valid_con <- left_join(valid_cfa, valid_fl, by = "id")
+```
 
+**Umsetzbarkeit**
+```{r, error=F, warning=F, message=F, echo=T}
+# Umsetzbarkeit
+omega(valid_con |> dplyr::select(flen_UM1, flen_UM2, flen_UM3, flen_UM4), 1)
+```
+
+\
+
+**Unabhängigkeit**
+```{r, error=F, warning=F, message=F, echo=T}
+# Unabhängigkeit
+omega(valid_con |> dplyr::select(flen_WI1, flen_WI2, flen_WI3), 1)
+```
+
+
+\
+\
+
+## Frequentist Data Analysis
+
+```{r conv val, error=F, warning=F, message=F, echo=T, out.width = "1000px"}
 con.model <- 'level: 1
                 transfer_w   =~ tfe_1 + tfe_2 + tfe_3 + tfe_5
                 selektion_w  =~ sel_1 + sel_3 + sel_4 + sel_5
@@ -538,65 +595,69 @@ fit_con <- sem(con.model,
                data = valid_con, 
                cluster = "id"
                )
+```
 
+Covariances not shown in plot.
+```{r conv val2, error=F, warning=F, message=F, echo=T, out.width = "1000px"}
+lavaanPlot(model = fit_con,
+          node_options = list(shape = "box", fontname = "Helvetica"),
+          edge_options = list(color = "grey"),
+          coefs = TRUE)
 
 standardizedSolution(fit_con)
 ```
-
+\
+\
 
 ## BF Data Analysis (with predicted values)
 
 
 ```{r conv val bf, error=F, warning=F, message=F, echo=T, layout = "l-page"}
-
 pred_con <- data.frame(lavPredict(fit_con, method = "regression", level = 2))
+```
 
+**Correlation Transfer ~~ Unsetzbarkeit**
+```{r conv val bf1, error=F, warning=F, message=F, echo=T, layout = "l-page"}
 correlationBF(y = pred_con$transfer_b, x = pred_con$umsetzung, 
               #rscale = .3,                                   # width of prior: standard
               nullInterval = c(.3, 1)                        # assumption was medium effect
               )
+```
 
+**Correlation Transfer ~~ Unabhängigkeit**
+```{r conv val bf2, error=F, warning=F, message=F, echo=T, layout = "l-page"}
 correlationBF(y = pred_con$transfer_b, x = pred_con$differenz, 
               # rscale = .3,                                    # width of prior: standard
               nullInterval = c(-1, 0)                          # assumption was negative effect
               )
+```
 
+**Correlation Enrichment ~~ Unabhängigkeit**
+```{r conv val bf3, error=F, warning=F, message=F, echo=T, layout = "l-page"}
 correlationBF(y = pred_con$enrichment_b, x = pred_con$differenz, 
               # rscale = .3,                                    # width of prior: standard
               nullInterval = c(.1, 1)                        # assumption was small effect
               )
 ```
-\
-\
 
-
-# Exploratory Analyses
-```{r expl, error=F, warning=F, message=F, echo=T, layout = "l-page"}
-f4.model2_sem <- 'level: 1
-                transfer_w   =~ t1*tfe_1 + t2*tfe_2 + t3*tfe_3 + t5*tfe_5
-                selektion_w  =~ s1*sel_1 + s3*sel_3 + s4*sel_4 + s5*sel_5
-                enrichment_w =~ e1*enr_1 + e2*enr_2 + e3*enr_3 + e4*enr_4 
-                relation_w   =~ r1*rel_1 + r2*rel_2 + r3*rel_3 + r4*rel_4
-                
-              level: 2
-                transfer_b   =~ t1*tfe_1 + t2*tfe_2 + t3*tfe_3 + t5*tfe_5
-                selektion_b  =~ s1*sel_1 + s3*sel_3 + s4*sel_4 + s5*sel_5
-                enrichment_b =~ e1*enr_1 + e2*enr_2 + e3*enr_3 + e4*enr_4 
-                relation_b   =~ r1*rel_1 + r2*rel_2 + r3*rel_3 + r4*rel_4
-                
-                tfe_2 ~~ 0*tfe_2
-                sel_5 ~~ sel_1
-                enr_2 ~~ 0*enr_2
-                rel_3 ~~ 0*rel_3
-                
-                relation_b ~ semester
-                transfer_b ~ semester
-             '
-
-fit_sem <- sem(f4.model2_sem, 
-              data = valid_cfa, 
-              cluster = "id",
-              std.lv=TRUE
+**Correlation Relationierung ~~ Unabhängigkeit**  
+(not preregistered, therefore exploratory)
+```{r}
+correlationBF(y = pred_con$relation_b, x = pred_con$differenz, 
+              # rscale = .3,                                    # width of prior: standard
+              nullInterval = c(.1, 1)                        # assumption was small effect
               )
-summary(fit_sem, fit.measures = TRUE)
 ```
+
+
+
+\
+\
+
+# Used packages & Setup
+
+```{r}
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
+R.Version()
+```
+

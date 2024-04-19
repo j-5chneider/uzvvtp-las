@@ -44,3 +44,7 @@ rsconnect/
 # password in clear text so I can't share
 4_preregistration_validation/live-datastream.Rmd
 .Rproj.user
+
+
+# Can't share scientific usefile
+data/BilWiss_Laengsschnitt_MZP1234_SUF_1809-24a.sav

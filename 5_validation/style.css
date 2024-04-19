@@ -1,0 +1,13 @@
+/*.tocify .tocify-header {
+    width: 350px;
+}*/
+
+h1 {
+    font-weight: bold;
+    color: #2780e3;
+}
+
+h2 {
+    font-weight: bold;
+    color: #7eb3ee;
+}

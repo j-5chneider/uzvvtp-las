@@ -1,7 +1,6 @@
 ---
-title: "item selection"
-description: |
-  Erhebungsinstrument „Überzeugungen zum Verhältnis von Theorie und Praxis von Lehramtsstudierenden“
+title: "Item selection"
+subtitle: "Erhebungsinstrument „Überzeugungen zum Verhältnis von Theorie und Praxis von Lehramtsstudierenden“"
 
 author:
   - name: Jürgen Schneider 
@@ -14,36 +13,52 @@ author:
     affiliation_url: http://wipaed.jku.at/wip-team/ruben-kulcsar/
 date: "`r Sys.Date()`"
 output: 
-  radix::radix_article:
-    toc: true
-    toc_depth: 2
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_float:
+      collapsed: false
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+css: style.css
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(
+  echo=TRUE, 
+  eval=TRUE,
+  warning=FALSE,
+  message=FALSE,
+  tidy=TRUE,
+  R.options=list(width=80),
+  tidy.opts=list(width.cutoff=80), # For code
+  width = 300,
+  background="grey")  # For output
 options(scipen=1, digits=3)
 ```
 
+\
+\
+[![](../webs/osf0.png)](https://osf.io/jh6rx/)[&nbsp; Link to OSF-Project](https://osf.io/jh6rx/)
+<br />
+Questionnaire realized with [formr](https://formr.org/)
+<br />
+see the questionnaire [here](https://showcase.formr.org/)
 
-# data import
+\
+
+# Data import & cleaning
+
+**Import**
 ```{r data import, echo = T, cache=F}
 library(tidyverse)
 library(rio)
 itemsel <- rio::import("https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/pilot1.csv")
 ```
 
-<aside>
-[![](../webs/osf0.png)](https://osf.io/jh6rx/)[&nbsp; Link to OSF-Project](https://osf.io/jh6rx/)
-<br /><br />
-Questionnaire realized with [formr](https://formr.org/)
-<br /><br />
-see the questionnaire [here](https://showcase.formr.org/)
-</aside>
 
-
-# data cleaning
-
-## delete empty rows/ rows of test run
+**Cleaning: delete empty rows/ rows of test run**  
 data collection began at 28th Jan 2019: deleting all test runs before that date
 
 ```{r data cleaning 1, echo = T}
@@ -55,10 +70,11 @@ itemsel <- itemsel %>%
   filter(ended > dmy("27-01-2019"))           # delete test runs before first data collection
 ```
 
-## deleting unreasonable values
-(e.g. out of range data)
 
-__Semester__
+# Sample description {.tabset}
+and editing/deleting unreasonable values (e.g. out of range data)
+
+## Semester
 
 ```{r data cleaning 2, echo = T}
 # semester: no unreasonable values
@@ -70,15 +86,9 @@ ggplot(itemsel, aes(x = as.factor(semester))) +
 ```
 \
 
-__Standort__
+## Standort
 
 ```{r data cleaning 3, echo = T}
-ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Stuttgart", "Tübingen", "Vechta")))) +
-  geom_bar() +
-  labs(title = "Count of participants by Standort") +
-  geom_text(aes(label = ..count..), stat = "count", vjust = -0.3, size = 4)
-
-
 # Standort: Two cases from Tübingen that checked Stuttgart
 # However Stuttgart was not part of the sample and the time and date show the cases come from Tübingen
 itemsel <- itemsel %>%
@@ -91,15 +101,20 @@ ggplot(itemsel, aes(x = factor(standort, labels = c("Flensburg", "Linz", "Tübin
 ```
 \
 
-__Subject__
+## Subject
 
 ```{r data cleaning 4, echo = T}
-# subject: one person seemed to have checked nearly all subjects -> deletion of that value
 library(knitr)
 fach_freq <- data.frame(table(itemsel$fach))
 names(fach_freq) <- c("Combination of Subjects", "Frequency")
 kable(fach_freq, format = "html")
+```
 
+\
+
+one person seemed to have checked nearly all subjects -> deletion of that value
+
+```{r data cleaning 5, echo = T}
 itemsel <- itemsel %>%
   mutate(fach = ifelse(fach == "1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 
                        19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 
@@ -109,40 +124,11 @@ itemsel <- itemsel %>%
 rm(fach_freq)
 ```
 
+\
 
-## pattern analysis (in progress)
+# item descriptions {.tabset}
 
-```{r data cleaning 5, layout="l-page ", echo = T}
-# pattern analysis by 10 participants
-
-# facet_plot <- itemsel %>%
-#   mutate(facet = c(rep(1:43, each=5), rep(44, 4)),
-#          id = c(rep(1:5, 43), 1:4)) %>%
-#   select(-c(standort:fach_other), -c(session:datenschutz)) %>%
-#   gather(key = "variable", value = "value", tfe_tfe_01:rel_rel_09)
-
-# ggplot(facet_plot, aes(x = variable, y = value)) +
-#   geom_line(aes(color = as.factor(id), group = as.factor(id))) +
-#   facet_wrap(facet_plot$facet, scales = "fixed") +
-#   theme(legend.position="none",
-#         strip.text.x = element_blank(),
-#         strip.background = element_blank())
-
-
-# for (i in 1:44) {
-#   tmp <- facet_plot %>%
-#     filter(facet == i)
-#   
-#   ggplot(tmp, aes(x = variable, y = value)) +
-#     geom_line(aes(color = as.factor(id), group = as.factor(id))) +
-#     theme(legend.position="none", strip.text.x = element_blank(), strip.background = element_blank())
-# }
-
-
-```
-
-
-# item descriptions
+## Question & answer format
 
 * source: own creation
 * question type: likert scale
@@ -170,7 +156,6 @@ rm(fach_freq)
 ## item labels and codes
 
 ```{r item names, layout = "l-screen-inset", echo = T}
-
 # importing item labels and codes
 items <- rio::import("https://raw.githubusercontent.com/j-5chneider/uzvvtp-las/master/data/items.csv")
 
@@ -192,7 +177,7 @@ __item values__
 
 ```{r descriptives1, layout = "l-page", echo = T}
 efa_data <- itemsel %>%
-  select("tfe_tfe_01":"rel_rel_09")
+  dplyr::select("tfe_tfe_01":"rel_rel_09")
 
 library(fBasics)
 tmp_desc <-basicStats(efa_data)[c("Mean", "Stdev", "Median", "Minimum", "Maximum", "nobs", "NAs"),]
@@ -217,37 +202,33 @@ ggplot(efa_data_l, aes(x=value)) +
   stat_density(bw = 0.5)
 ```
 
+\
 
-# Exploratory factor analysis
+# Results Study 1, FF1
 
-## Comparing number of factors via fit indices
-
-__Estimator: Maximum Likelihood__
-
+## Number of factors 
+Comparing number of factors via fit indices  
+  
+  
 ```{r nfactors1, layout="l-page", echo = T, fig.height = 6}
 library(psych)
 
 corMat <- cor(efa_data, use = "pairwise.complete.obs")
-
 nfactors(x = corMat, n.obs = 219, rotate = "oblimin", fm = "mle", n = 12)
 ```
 \
 \
 
-__Estimator: Minimum Residual__
 
-```{r nfactors2, layout="l-page", echo = T, fig.height = 6}
-nfactors(x = corMat, n.obs = 219, rotate = "oblimin", fm = "minres", n = 12)
-```
-
-
-__Inference__
-Indices point to solutions between 3 and 6 factors.  
-We will have a deeper look into these four different solutions, their consistency within factors and possible content interpretation.
+__Inference__  
+Indices point to solutions between 3 and 6 factors.   
+We will have a deeper look into these four different solutions, their consistency within factors and possible content interpretation via EFAs.
+\
 \
 
+## Exploratory factor analyses {.tabset}
 
-## 3 factor solution
+### 3 factor solution
 
 ```{r fa3.1, layout="l-page", echo = T}
 # three factors with oblimin rotation and ML estimator
@@ -276,7 +257,7 @@ kable(fa3_tab) %>%
 ```
 
 
-## 4 factor solution
+### 4 factor solution
 
 ```{r fa4.1, layout="l-page", echo = T}
 # four factors with oblimin rotation and ML estimator
@@ -299,7 +280,7 @@ kable(fa4_tab) %>%
 
 ```
 
-## 5 factor solution
+### 5 factor solution
 
 ```{r fa5.1, layout="l-page", echo = T}
 # five factors with oblimin rotation and ML estimator
@@ -322,7 +303,7 @@ kable(fa5_tab) %>%
 
 ```
 
-## 6 factor solution
+### 6 factor solution
 
 ```{r fa6.1, layout="l-page", echo = T}
 # six factors with oblimin rotation and ML estimator
@@ -358,22 +339,22 @@ Fit indices between the different factor solutions are quite similar. However, w
 * allows clear distinction of interpretation between factors (heterogenity between factors)
 
 
-## 4 Factor, McDonalds $\omega$
+**4 Factor, McDonalds $\omega$**
 
 ```{r rel4, layout="l-page", echo = T}
 
 # subsetting data for reliability analysis
 rel_data4.1 <- efa_data %>%
-  select("tfe_tfe_03", "tfe_tfe_08", "tfe_did_01", "tfe_did_05", "tfe_tfe_02")    # 5 items with highest weights from transfer factor
+  dplyr::select("tfe_tfe_03", "tfe_tfe_08", "tfe_did_01", "tfe_did_05", "tfe_tfe_02")    # 5 items with highest weights from transfer factor
 
 rel_data4.2 <- efa_data %>%
-  select("tfo_sel_01", "tfo_sel_04", "tfo_sel_05", "tfo_sel_08", "tfo_sel_09")    # 5 items with highest weights from selection factor
+  dplyr::select("tfo_sel_01", "tfo_sel_04", "tfo_sel_05", "tfo_sel_08", "tfo_sel_09")    # 5 items with highest weights from selection factor
 
 rel_data4.3 <- efa_data %>%
-  select("tfo_enr_01", "tfo_enr_02", "tfo_enr_03", "tfo_enr_04", "tfo_enr_05")    # 5 items with highest weights from enrichment factor
+  dplyr::select("tfo_enr_01", "tfo_enr_02", "tfo_enr_03", "tfo_enr_04", "tfo_enr_05")    # 5 items with highest weights from enrichment factor
 
 rel_data4.4 <- efa_data %>%
-  select("rel_rel_02", "rel_rel_03", "rel_rel_08", "rel_rel_09")                  # 4 items with highest weights from relationierung factor 
+  dplyr::select("rel_rel_02", "rel_rel_03", "rel_rel_08", "rel_rel_09")                  # 4 items with highest weights from relationierung factor 
                                                                                   # (with one negative and one transformation item deleted)
 
 ```
@@ -383,26 +364,11 @@ rel_data4.4 <- efa_data %>%
 * __McDonalds__ $\sf{\omega_{Enrichment}}$= `r MBESS::ci.reliability(rel_data4.3)$est`, __95%CI__[`r MBESS::ci.reliability(rel_data4.3)$ci.lower`, `r MBESS::ci.reliability(rel_data4.3)$ci.upper`]
 * __McDonalds__ $\sf{\omega_{Relationierung}}$= `r MBESS::ci.reliability(rel_data4.4)$est`, __95%CI__[`r MBESS::ci.reliability(rel_data4.4)$ci.lower`, `r MBESS::ci.reliability(rel_data4.4)$ci.upper`]
 
-## 4 Factor, items of instrument
 
-```{r items4, layout="l-page", echo = T}
-items_4fact <- items %>%
-  dplyr::filter(rownames(items) %in% names(rel_data4.1) | 
-                rownames(items) %in% names(rel_data4.2) | 
-                rownames(items) %in% names(rel_data4.3) | 
-                rownames(items) %in% names(rel_data4.4) ) %>%
-  mutate(Skala = c(rep("Transfer (Transfer & Didaktik)", 5), rep("Selektion", 5), rep("Enrichment", 5), rep("Relationierung", 4))) %>%
-  select(Skala, `Item Label`)
+\
+\
 
-kable(items_4fact) %>%
-  row_spec(6:10, background = "#c4fdff") %>%
-  row_spec(16:19, background = "#c4fdff") %>%
-  collapse_rows(columns = 1, valign = "middle") %>%
-  scroll_box(width = "100%")
-```
-
-
-# reformulation of several items
+# Reformulation of several items
 
 Several items of the instrument will be reformulated due to possible two-dimensionality (that can be further avoided): E.g. the item "Wissenschaftliches Wissen wird durch Lehrer*innen unmittelbar auf praktisches Handeln in der Schule übertragen." asks (1) if there is a __possibility__ of transfer and (2) if teachers __actually__ perform transformations (an empirical question). We decided to lose the empirical side of the question as we are interested in the perceived possibilities.  
 \
@@ -419,3 +385,15 @@ kable(items_4f) %>%
   collapse_rows(columns = 1, valign = "middle") %>%
   scroll_box(width = "100%")
 ```
+
+
+\
+\
+
+# Used packages & Setup
+
+```{r}
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
+R.Version()
+```
+
